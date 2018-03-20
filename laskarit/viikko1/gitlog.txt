@@ -1,0 +1,115 @@
+commit 6b4ae7f9c414bb7978f81319737eb4df8913dfb8
+Author: Eetu Ikonen <eetu.e.ikonen@gmail.com>
+Date:   Tue Mar 20 14:05:27 2018 +0200
+
+    changes2
+
+ tiedostoja/file1 | 0
+ tiedostoja/file2 | 0
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+
+commit e6f2ee52459adefe8ea5afb6477184bdaf5f4e2e
+Author: Eetu Ikonen <eetu.e.ikonen@gmail.com>
+Date:   Tue Mar 20 14:02:57 2018 +0200
+
+    tiedostoja
+
+ tiedostoja/file1 | 0
+ tiedostoja/file2 | 0
+ tiedostoja/file3 | 0
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 107e7037669f89911cfbf45313233be19474850a
+Author: Eetu Ikonen <eetu.e.ikonen@gmail.com>
+Date:   Tue Mar 20 13:58:45 2018 +0200
+
+    changes
+
+ eka.txt    | 2 ++
+ kolmas.txt | 1 +
+ 2 files changed, 3 insertions(+)
+
+commit ebd57ecf378d5b5e7e23dd256930936caa3dd79a
+Author: Eetu Ikonen <eetu.e.ikonen@gmail.com>
+Date:   Tue Mar 20 13:57:23 2018 +0200
+
+    rename
+
+ eka.txt      | 19 +++++++++++++++++++
+ tiedosto.txt | 19 -------------------
+ 2 files changed, 19 insertions(+), 19 deletions(-)
+
+commit 95502c2cd8c5507672aff902725aa5a2d5daa445
+Author: Eetu Ikonen <eetu.e.ikonen@gmail.com>
+Date:   Tue Mar 20 13:56:10 2018 +0200
+
+    poistettu toinen
+
+ toinen.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 0f288bd9696d8e0274908544f59797a51198c12b
+Author: Eetu Ikonen <eetu.e.ikonen@gmail.com>
+Date:   Tue Mar 20 13:53:58 2018 +0200
+
+    muutos
+
+ tiedosto.txt | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+commit 7c8500a20b109c8e1e8fef4cd11b3dd1ed5e6574
+Author: Eetu Ikonen <eetu.e.ikonen@gmail.com>
+Date:   Tue Mar 20 13:52:38 2018 +0200
+
+    tiedosto
+
+ tiedosto.txt | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+commit 70899b2f1e73efe1b035f82328357373ca88e319
+Author: Eetu Ikonen <eetu.e.ikonen@gmail.com>
+Date:   Tue Mar 20 13:47:11 2018 +0200
+
+    changes
+
+ kolmas.txt     | 1 +
+ stuff/uusi.txt | 1 +
+ toinen.txt     | 1 +
+ 3 files changed, 3 insertions(+)
+
+commit b985baebf278640f21ea4f944a4298a686fe2b5d
+Author: Eetu Ikonen <eetu.e.ikonen@gmail.com>
+Date:   Tue Mar 20 13:45:52 2018 +0200
+
+    Kolmas
+
+ kolmas.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit a75ebfbf1b2048991deeb220ae992fccc4f14f83
+Author: Eetu Ikonen <eetu.e.ikonen@gmail.com>
+Date:   Tue Mar 20 13:43:38 2018 +0200
+
+    test
+
+ tiedosto.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 37c3f3fb3bf838cb16b971bef97a00c1ce127e7b
+Author: Eetu Ikonen <eetu.e.ikonen@gmail.com>
+Date:   Tue Mar 20 13:43:19 2018 +0200
+
+    muutos ja lisäys
+
+ toinen.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit bf6fbc5cd7ed5bb724cdc6a586ccc2d696ebcb02
+Author: Eetu Ikonen <eetu.e.ikonen@gmail.com>
+Date:   Tue Mar 20 13:41:13 2018 +0200
+
+    tiedosto.txt luotu
+
+ tiedosto.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
