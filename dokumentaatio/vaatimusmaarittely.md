@@ -58,4 +58,5 @@ Ideoita ja muita mahdollisia toiminnallisuuksia, jos aikaa riittää:
 - online huoneet, joihin voi asettaa salasanan ja minimi buy inin
 - yksinkertainen tekoäly, jotta voi pelata yksinpeliä
 - scoreboard
+- chat tai joku muu keskustelutapa
 
