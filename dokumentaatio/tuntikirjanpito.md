@@ -2,4 +2,4 @@
 
 | päivä | aika | kuvaus  |
 | :----:|:-----| :-----|
-| 1.4. | 2    | Unity projektin alustus, luokkien ja metodien lisääminen, pelin kulun runko. |
+| 1.4. | 3.5   | Unity projektin alustus, luokkien ja metodien lisääminen, pelin kulun runko. Panostus tominnon alkeet.|
