@@ -1,16 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿public class Deck {
 
-public class Deck : MonoBehaviour {
+    Card[] cards;
+    int cardIndex;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	public void InitializeDeck() {
+        throw new System.NotSupportedException("Functionality has not been implemented yet.");
+    }
+
+    public void ShuffleDeck() {
+        throw new System.NotSupportedException("Functionality has not been implemented yet.");
+    }
+
+    public Card GetCard() {
+        throw new System.NotSupportedException("Functionality has not been implemented yet.");
+    }
+
 }

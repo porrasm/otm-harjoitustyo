@@ -1,16 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿public class Card {
 
-public class Card : MonoBehaviour {
+    int suit;
+    int number;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public void SetCard(int suit, int number) {
+        this.suit = suit;
+        this.number = number;
+    }
+
+    public override string ToString() {
+        throw new System.NotSupportedException("Functionality has not been implemented yet.");
+    }
+
 }
