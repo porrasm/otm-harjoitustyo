@@ -59,4 +59,4 @@ Ideoita ja muita mahdollisia toiminnallisuuksia, jos aikaa riittää:
 - yksinkertainen tekoäly, jotta voi pelata yksinpeliä
 - scoreboard
 - chat tai joku muu keskustelutapa
-
+- ensisijaisesti pelistä tulee kaksiulotteinen, mutta jos aikaa riittää kolmiulotteinen fysiikka pohjainen pelitoiminnallisuus olisi hauska lisä peliin
