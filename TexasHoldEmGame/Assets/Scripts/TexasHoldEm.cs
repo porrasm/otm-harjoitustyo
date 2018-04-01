@@ -5,11 +5,19 @@ using UnityEngine.Networking;
 
 public class TexasHoldEm : NetworkBehaviour {
 
-    Deck deck;
-    Table table;
-    List<Player> players;
 
+    Deck deck;
+    Card[] tableCards;
+    int tableValue;
+    int biggestBet;
+    List<Player> players;
+    Player currentPlayer;
+    int dealer;
+    
     string gameState;
+
+    private int smallBlind;
+    private int bigBlind;
 
 	void Start () {
 
@@ -17,6 +25,8 @@ public class TexasHoldEm : NetworkBehaviour {
 
         players = new List<Player>();
         deck = new Deck();
+        dealer = 0;
+
 	}
 	
 	void Update () {
@@ -26,6 +36,30 @@ public class TexasHoldEm : NetworkBehaviour {
     }
 
     //Game functionality
+    public void Bet() {
+
+    }
+    [Command]
+    public void CmdBet() {
+
+    }
+
+    public void InitializeRound() {
+
+        gameState = "Preflop";
+
+        deck.InitializeDeck();
+        deck.ShuffleDeck();
+        tableCards = new Card[5];
+
+        tableValue = 0;
+
+        foreach (Player player in players) {
+            player.Needed = 0;
+            player.Bet = 0;
+        }
+
+    }
 
     //Game progression
     IEnumerator GameStart() {
@@ -46,37 +80,48 @@ public class TexasHoldEm : NetworkBehaviour {
             }
 
             yield return new WaitForSeconds(1);
+            StartCoroutine(HoldemRound());
         }
 
     }
 
+    //Minimum players 3 at the moment
     IEnumerator HoldemRound() {
 
-        gameState = "Preflop";
-
-        table.InitializeTable();
-        deck.InitializeDeck();
-        deck.ShuffleDeck();
-
         //Blinds
+        currentPlayer = PlayerByOrder(1);
+        if (currentPlayer.CanPay(smallBlind)) {
+            currentPlayer.Money -= smallBlind;
+            currentPlayer.Bet += smallBlind;
+            tableValue += smallBlind;
+        }
+        currentPlayer = PlayerByOrder(2);
+        if (currentPlayer.CanPay(bigBlind)) {
+            currentPlayer.Money -= bigBlind;
+            currentPlayer.Bet += bigBlind;
+            tableValue += bigBlind;
+        }
 
-        //Bets
-
+        //Deal
         for (int i = 0; i < 2; i++) {
-            foreach (Player player in players) {
-                player.GiveCard(deck.GetCard());
+            foreach (Player p in players) {
+                p.GiveCard(deck.GetCard());
                 //Card animation
             }
         }
+
+        //Bets
+        StartCoroutine(Betting());
+        
 
         //Flop, 3 cards
         gameState = "Flop";
 
         deck.GetCard();
 
-        table.DealCard(deck.GetCard());
-        table.DealCard(deck.GetCard());
-        table.DealCard(deck.GetCard());
+        for (int i = 0; i < 3; i++) { 
+            tableCards[i] = deck.GetCard();
+        }
 
         //Bets
 
@@ -84,7 +129,7 @@ public class TexasHoldEm : NetworkBehaviour {
         gameState = "River";
 
         deck.GetCard();
-        table.DealCard(deck.GetCard());
+        tableCards[3] = deck.GetCard();
 
         //Bets
 
@@ -92,13 +137,67 @@ public class TexasHoldEm : NetworkBehaviour {
         gameState = "Turn";
 
         deck.GetCard();
-        table.DealCard(deck.GetCard());
+        tableCards[4] = deck.GetCard();
 
         //Bets
 
         //
 
         yield return null;
+    }
+
+    IEnumerator Betting() {
+
+        for (int i = 1; i <= players.Count; i++) {
+
+            currentPlayer = PlayerByOrder(i);
+            currentPlayer.Needed = BiggestBet() - currentPlayer.Bet;
+
+            currentPlayer.EnablePlayerTurn();
+
+            while (!currentPlayer.Ready) {
+                yield return null;
+            }
+
+            Turn turn = currentPlayer.Turn;
+
+            if (turn.fold) {
+                currentPlayer.Folded = true;
+            } else {
+
+                if (currentPlayer.CanPay(currentPlayer.Needed + turn.raise)) {
+                    currentPlayer.Money -= currentPlayer.Needed + turn.raise;
+                    currentPlayer.Bet += currentPlayer.Needed + turn.raise;
+                    currentPlayer.Needed = BiggestBet() - currentPlayer.Bet;
+                }
+
+            }
+
+            currentPlayer.Ready = false;
+
+        }
+
+    }
+
+    //Other
+    Player PlayerByOrder(int amount) {
+        return players[(dealer + amount) % (players.Count)];
+    }
+
+    public void RemovePlayer(int index) {
+        throw new System.NotSupportedException("Functionality has not been implemented yet.");
+    }
+
+    public int BiggestBet() {
+
+        int biggest = players[0].Bet;
+        for (int i = 1; i < players.Count; i++) {
+            if (players[i].Bet > biggest) {
+                biggest = players[i].Bet;
+            }
+        }
+
+        return biggest;
     }
 
 }
