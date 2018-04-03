@@ -30,6 +30,13 @@ public class Player : NetworkBehaviour {
 
     private Card[] cards;
     
+    void Update() {
+        if (!isLocalPlayer) { return; }
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            CmdSetReady(true);
+            print("ready");
+        }
+    }
 
     //Game actions
     [Command]
@@ -54,11 +61,17 @@ public class Player : NetworkBehaviour {
 
 
     public void ResetCards() {
-        throw new System.NotSupportedException("Functionality has not been implemented yet.");
+        cards = new Card[2];
     }
 
     public void GiveCard(Card card) {
-        throw new System.NotSupportedException("Functionality has not been implemented yet.");
+
+        if (cards[0] == null) {
+            cards[0] = card;
+        } else {
+            cards[1] = card;
+        }
+
     }
 
     //Other
@@ -69,5 +82,13 @@ public class Player : NetworkBehaviour {
     public void EnablePlayerTurn() {
         throw new System.NotSupportedException("Functionality has not been implemented yet.");
     }
+    [ClientRpc]
+    public void RpcPlayerTurn() {
 
+        if (!isLocalPlayer) { return; }
+
+
+
+    }
+    
 }
