@@ -28,7 +28,7 @@ GameObject:
   - component: {fileID: 114168181060691822}
   m_Layer: 0
   m_Name: Card
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -414,8 +414,7 @@ MonoBehaviour:
   distance: 5
   minDistance: 1
   maxDistance: 10
-  rotSens: 75
-  rotationSens: 0.4
+  rotationSens: 8
   tableHeight: 1.03
 --- !u!114 &114655366442388348
 MonoBehaviour:

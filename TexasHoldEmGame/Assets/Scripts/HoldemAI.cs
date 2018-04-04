@@ -1,16 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class HoldemAI : MonoBehaviour {
+public class HoldemAI : Player {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    void Start() {
+        Ready = true;
+    }
+
+    public override void EnablePlayerTurn(bool enable, bool payUp) {
+
+        if (!enable) {
+            return;
+        }
+
+        
+
+        if (Turn == null) {
+            Turn = new Turn();
+        }
+        Turn.NewTurn();
+
+        Money = Needed + 1;
+        print("Holdem AI Checks: " + Needed);
+        Turn.raise = 0;
+        Ready = true;
+    }
+
 }

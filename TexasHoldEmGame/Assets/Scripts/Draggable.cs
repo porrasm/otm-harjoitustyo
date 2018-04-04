@@ -9,7 +9,6 @@ public class Draggable : NetworkBehaviour {
     public float minDistance = 1f;
     public float maxDistance = 10f;
     private float zoomSens = 0.5f;
-    public float rotSens = 75f;
     public float rotationSens = 0.4f;
     public float tableHeight = 3.6f;
     private float throwPower = 10f;

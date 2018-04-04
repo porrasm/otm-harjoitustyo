@@ -5,10 +5,13 @@ using UnityEngine.Networking;
 
 public class CardObject : NetworkBehaviour {
 
+    Collider c;
+
     Transform suit;
     Transform number;
     Card card;
-    Player player;
+    GameObject owner;
+    public GameObject Owner { get { return owner; } }
     float smoothTime = 1;
     bool initialized;
     Rigidbody rb;
@@ -17,6 +20,8 @@ public class CardObject : NetworkBehaviour {
     Vector3 targetRotation;
     Vector3 posVelocity;
     Vector3 rotVelocity;
+    bool arrived;
+    bool kill;
 
     float moveSpeed;
 
@@ -28,6 +33,20 @@ public class CardObject : NetworkBehaviour {
         GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         targetPosition = Vector3.zero;
         rb = GetComponent<Rigidbody>();
+        c = GetComponent<Collider>();
+    }
+
+    void Start() {
+
+        if (!isServer) { return; }
+
+        CmdUpdateCard();
+
+    }
+
+    void CmdUpdateCard() {
+        RpcSetOwner(owner);
+        RpcSetCard(card.Suit, card.Number);
     }
 
     void Update() {
@@ -36,41 +55,50 @@ public class CardObject : NetworkBehaviour {
         if (!isServer) {
 
             if (!initialized) {
-                CmdInitialize();
+                CmdUpdateCard();
             }
 
             return;
         }
 
-        if (targetPosition != Vector3.zero) {
+        if (!arrived) {
+
+            if (c.enabled || !rb.isKinematic) {
+                c.enabled = false;
+                rb.isKinematic = true;
+            }
 
             transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref posVelocity, smoothTime);
             transform.eulerAngles = Vector3.SmoothDamp(transform.eulerAngles, targetRotation, ref rotVelocity, smoothTime);
             if (Vector3.Distance(transform.position, targetPosition) < 0.01f) {
                 transform.position = targetPosition;
                 transform.eulerAngles = targetRotation;
-                targetPosition = Vector3.zero;
-                targetRotation = Vector3.zero;
+                arrived = true;
                 rb.isKinematic = false;
+                c.enabled = true;
+
+                if (kill) {
+                    NetworkServer.Destroy(gameObject);
+                }
+
             }
 
         }
 
     }
 
-    [Command]
-    void CmdInitialize() {
-        RpcInitialize(player.gameObject, card);
-    }
-    [ClientRpc]
-    void RpcInitialize(GameObject player, Card card) {
-        this.player = player.GetComponent<Player>();
-        this.card = card;
-        initialized = true;
-    }
 
-    public void SetOwner(Player player) {
-        this.player = player;
+    public void Initialize(GameObject player, Card card) {
+        this.owner = player;
+        this.card = card;
+    }
+    public void RpcSetOwner(GameObject player) {
+        this.owner = player;
+    }
+    public void RpcSetCard(int suit, int number) {
+        card = new Card();
+        card.SetCard(suit, number);
+        UpdateCard();
     }
 
     public void SetTargetPosition(Vector3 position, Vector3 rotation) {
@@ -80,12 +108,20 @@ public class CardObject : NetworkBehaviour {
         targetPosition = position;
         targetRotation = rotation;
     }
+    public void TurnCard() {
+        targetRotation += new Vector3(0, 0, 180);
+        arrived = false;
+    }
 
-    public void SetCard(Card newCard) {
+    public void KillCard() {
+        Transform deck = GameObject.FindGameObjectWithTag("Table").GetComponent<Table>().Deck;
+        targetPosition = deck.position;
+        targetRotation = deck.eulerAngles;
+        arrived = false;
+        kill = true;
+    }
 
-        print("Setting card");
-
-        card = newCard;
+    public void UpdateCard() {
 
         string suitString = "";
 
@@ -118,13 +154,15 @@ public class CardObject : NetworkBehaviour {
         suit.GetComponent<Renderer>().material.mainTexture = suitTexture;
         number.GetComponent<Renderer>().material.mainTexture = numberTexture;
 
-        if (card.Number == 2 | card.Number == 3) {
+        if (card.Suit == 2 || card.Suit == 3) {
             suit.GetComponent<Renderer>().material.color = Color.red;
             number.GetComponent<Renderer>().material.color = Color.red;
         } else {
             suit.GetComponent<Renderer>().material.color = Color.black;
             number.GetComponent<Renderer>().material.color = Color.black;
         }
+
+        initialized = true;
 
         //RpcSetCard(newCard);
     }

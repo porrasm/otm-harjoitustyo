@@ -8,22 +8,27 @@ public class TexasHoldEm : NetworkBehaviour {
     Table table;
     Deck deck;
     Card[] tableCards;
-    int tableValue;
-    int biggestBet;
+    [SyncVar]
+    int tableValue, biggestBet, dealer;
+    public int TableValue { get { return tableValue; } }
     Player[] players;
     Player currentPlayer;
-    int dealer;
     bool roundIsOn;
+    GameObject AIPrefab;
+
+    bool gameIsReady;
+    bool canContinue;
+    int roundAmount;
 
     string gameState;
 
-    private int smallBlind;
-    private int bigBlind;
+    private int smallBlind = 10;
+    private int bigBlind = 20;
 
     void Start() {
 
         if (!isServer) { return; }
-
+        AIPrefab = Resources.Load<GameObject>("AIPlayer");
         UpdatePlayers();
         deck = new Deck();
         dealer = 0;
@@ -35,10 +40,13 @@ public class TexasHoldEm : NetworkBehaviour {
 
         if (!isServer) { return; }
 
-        if (Input.GetKeyDown(KeyCode.Return)) {
+        if (Input.GetKeyDown(KeyCode.P)) {
             UpdatePlayers();
-            StartCoroutine(GameStart());
-            print("Starting game");
+            StartCoroutine(PlaceholderStart());
+        }
+
+        if (!roundIsOn && roundAmount > 0 && gameIsReady) {
+            StartCoroutine(StartHoldemRound());
         }
 
     }
@@ -60,27 +68,9 @@ public class TexasHoldEm : NetworkBehaviour {
 
     }
 
-    public void InitializeRound() {
 
-        gameState = "Preflop";
-
-        deck.InitializeDeck();
-        deck.ShuffleDeck();
-
-        tableCards = new Card[5];
-
-        tableValue = 0;
-
-        foreach (Player player in players) {
-            player.Needed = 0;
-            player.Bet = 0;
-            player.ResetCards();
-        }
-
-    }
-
-    //Game progression
-    IEnumerator GameStart() {
+    //Game
+    IEnumerator PlaceholderStart() {
 
         gameState = "Game starting...";
 
@@ -94,155 +84,308 @@ public class TexasHoldEm : NetworkBehaviour {
             }
 
             if (allReady) {
-                print("All are ready");
-                StartCoroutine(HoldemRound());
+
+                UpdatePlayers();
+
+                for (int i = 0; i < 10 - players.Length; i++) {
+                    GameObject newAI = Instantiate(AIPrefab);
+                    NetworkServer.Spawn(newAI);
+                }
+
+                UpdatePlayers();
+                SetPlayerPositions();
+
+                foreach (Player p in players) {
+                    p.Money = 2000;
+                    p.Ready = false;
+                }
+
                 break;
             }
 
             yield return new WaitForSeconds(1);
         }
 
+        gameIsReady = true;
+        roundAmount = 30;
+        roundIsOn = false;
+
     }
 
-    //Minimum players 3 at the moment
-    IEnumerator HoldemRound() {
+   
+    IEnumerator StartHoldemRound() {
 
-        print("Starting round");
+        if (roundIsOn) {
+            yield break;
+        }
 
         roundIsOn = true;
-        InitializeRound();
+        print("GAME: Starting round.");
 
-        Blinds();
+        //Game rules
+        float defaultSmallWaitTime = 0.1f;
+        smallBlind = 10;
+        bigBlind = 20;
+        int buyIn = 2000;
+
+        Card card;
+
+        //Round Initialization
+        gameState = "Preflop";
+
+        deck.InitializeDeck();
+        deck.ShuffleDeck();
+        deck.ShuffleDeck();
+        deck.ShuffleDeck();
+
+        tableCards = new Card[5];
+        tableValue = 0;
+
+        print("GAME: Resetting players.");
+        ResetPlayers();
+
+        //Blinds
+        print("GAME: Paying blinds...");
+        yield return new WaitForSeconds(1);
+        Bet(PlayerByOrder(1), smallBlind);
+        UpdatePlayerUIs();
+        yield return new WaitForSeconds(1);
+        Bet(PlayerByOrder(2), bigBlind);
+        UpdatePlayerUIs();
+        yield return new WaitForSeconds(1);
 
         //Deal
+        print("GAME: Dealing cards...");
         for (int i = 0; i < 2; i++) {
             for (int j = 1; j <= players.Length; j++) {
                 Player p = PlayerByOrder(j);
-                Card card = deck.GetCard();
+                card = deck.GetCard();
+
                 p.GiveCard(card);
                 Transform cardPos = table.GetPlayerPosition(indexByOrder(j)).GetChild(i);
-                table.SpawnCard(p, card, cardPos);
-                yield return new WaitForSeconds(0.1f);
+                table.SpawnCard(p.gameObject, card, cardPos);
+                yield return new WaitForSeconds(defaultSmallWaitTime);
             }
         }
 
-        //Bets
-        StartCoroutine(Betting());
+        UpdatePlayerUIs();
+        yield return new WaitForSeconds(1);
 
+        //Betting round 1
+        print("GAME: Betting round 1 starts.");
+        canContinue = false;
+        StartCoroutine(BetRound());
 
-        //Flop, 3 cards
-        gameState = "Flop";
-
-        deck.GetCard();
-
-        for (int i = 0; i < 3; i++) {
-            tableCards[i] = deck.GetCard();
+        while (!canContinue) {
+            yield return new WaitForSeconds(1);
         }
 
-        //Bets
+        //Flop, first 3 cards
+        print("GAME: The flop, first 3 cards");
+        for (int i = 0; i < 3; i++) {
+            deck.GetCard();
+            card = deck.GetCard();
+            table.SpawnCard(gameObject, card, table.GetCardPosition(i));
+            yield return new WaitForSeconds(1);
+        }
+        UpdatePlayerUIs();
+
+        yield return new WaitForSeconds(1);
+
+        //Betting round 2
+        print("GAME: Betting round 2 starts.");
+        canContinue = false;
+        StartCoroutine(BetRound());
+
+        while (!canContinue) {
+            yield return new WaitForSeconds(1);
+        }
 
         //River, 4 cards
-        gameState = "River";
-
+        print("GAME: River, first 4 cards.");
         deck.GetCard();
-        tableCards[3] = deck.GetCard();
+        card = deck.GetCard();
+        table.SpawnCard(gameObject, card, table.GetCardPosition(3));
+        UpdatePlayerUIs();
+        yield return new WaitForSeconds(2);
 
-        //Bets
+        //Betting round 3
+        print("GAME: Betting round 3 starts.");
+        canContinue = false;
+        StartCoroutine(BetRound());
+
+        while (!canContinue) {
+            yield return new WaitForSeconds(1);
+        }
 
         //Turn, 5 cards
-        gameState = "Turn";
-
+        print("GAME: Turn, all 5 cards.");
         deck.GetCard();
-        tableCards[4] = deck.GetCard();
+        card = deck.GetCard();
+        table.SpawnCard(gameObject, card, table.GetCardPosition(4));
+        UpdatePlayerUIs();
+        yield return new WaitForSeconds(2);
 
-        //Bets
+        //Betting round 4
+        print("GAME: Betting round 4 starts.");
+        canContinue = false;
+        StartCoroutine(BetRound());
 
-        //
+        while (!canContinue) {
+            yield return new WaitForSeconds(1);
+        }
 
-        yield return null;
+        yield return new WaitForSeconds(2);
+
+        UpdatePlayerUIs();
+
+        //Reveal cards
+        print("GAME: Revealing cards.");
+        foreach (GameObject c in GameObject.FindGameObjectsWithTag("Card")) {
+
+            CardObject cardObject = c.GetComponent<CardObject>();
+
+            if (cardObject.Owner == gameObject) { continue; }
+
+            cardObject.TurnCard();
+            yield return new WaitForSeconds(defaultSmallWaitTime);
+
+        }
+
+        //Winning and money
+        print("GAME: Winner is: ");
+        yield return new WaitForSeconds(2);
+        //End round
+        print("GAME: Killing cards...");
+        foreach (GameObject g in GameObject.FindGameObjectsWithTag("Card")) {
+            g.GetComponent<CardObject>().KillCard();
+            yield return new WaitForSeconds(defaultSmallWaitTime);
+        }
+
+
+        print("GAME: Round end.");
+        roundAmount--;
+        roundIsOn = false;
+    }
+ 
+    //Betting
+    IEnumerator BetRound() {
+
+        //Betting round
+        print("GAME: Betting start");
+        for (int i = 1; i <= players.Length; i++) {
+
+            //Player turn
+            currentPlayer = PlayerByOrder(i);
+            GetNeeded(currentPlayer);
+
+            if (currentPlayer.Folded) {
+                continue;
+            }
+
+            UpdatePlayerUIs();
+            yield return new WaitForSeconds(0.5f);
+
+            PlayerTurn(false);
+
+            while (!currentPlayer.Ready) {
+                yield return null;
+            }
+            currentPlayer.EnablePlayerTurn(false);
+
+            //Analyzing turn
+            AnalyzeTurn();
+
+        }
+
+        //PayUp Round
+        print("GAME: Payup start");
+        for (int i = 1; i <= players.Length; i++) {
+
+            //Player turn
+            currentPlayer = PlayerByOrder(i);
+            GetNeeded(currentPlayer);
+
+            if (currentPlayer.Folded || currentPlayer.Needed == 0) {
+                continue;
+            }
+
+            UpdatePlayerUIs();
+            yield return new WaitForSeconds(0.5f);
+
+            PlayerTurn(true);
+
+            while (!currentPlayer.Ready) {
+                yield return null;
+            }
+            currentPlayer.EnablePlayerTurn(false);
+
+            //Analyzing turn
+            AnalyzeTurn();
+
+        }
+
+        yield return new WaitForSeconds(1);
+        canContinue = true;
+    }
+
+    public void PlayerTurn(bool payUp) {
+        currentPlayer.Turn = new Turn();
+        GetNeeded(currentPlayer);
+        currentPlayer.Ready = false;
+        currentPlayer.EnablePlayerTurn(true, payUp);
+    }
+    public void AnalyzeTurn() {
+        Turn turn = currentPlayer.Turn;
+
+        if (turn.fold) {
+            currentPlayer.Folded = true;
+            return;
+        }
+
+        Bet(currentPlayer, currentPlayer.Needed + turn.raise);
+    }
+
+
+    //Other Methods
+    public void SetPlayerPositions() {
+
+        for (int i = 0; i < players.Length; i++) {
+
+            players[i].SetPlayerPosition(table.GetPlayerPosition(i));
+
+        }
+
+    }
+
+    public void ResetPlayers() {
+        foreach (Player p in players) {
+            p.Bet = 0;
+            p.Needed = 0;
+            p.ResetCards();
+            p.RpcResetUI();
+        }
     }
 
     void Blinds() {
         currentPlayer = PlayerByOrder(1);
         if (currentPlayer.CanPay(smallBlind)) {
-            currentPlayer.Money -= smallBlind;
-            currentPlayer.Bet += smallBlind;
-            tableValue += smallBlind;
+            Bet(currentPlayer, smallBlind);
+            print("Player paid small blind. tableValue: " + tableValue);
         }
         currentPlayer = PlayerByOrder(2);
         if (currentPlayer.CanPay(bigBlind)) {
-            currentPlayer.Money -= bigBlind;
-            currentPlayer.Bet += bigBlind;
-            tableValue += bigBlind;
+            Bet(currentPlayer, bigBlind);
+            print("Player paid big blind. tableValue: " + tableValue);
         }
     }
 
-    IEnumerator Betting() {
-
-        for (int i = 1; i <= players.Length; i++) {
-
-            currentPlayer = PlayerByOrder(i);
-            GetNeeded(currentPlayer);
-
-            currentPlayer.EnablePlayerTurn();
-
-            while (!currentPlayer.Ready) {
-                yield return null;
-            }
-
-            Turn turn = currentPlayer.Turn;
-
-            if (turn.fold) {
-                currentPlayer.Folded = true;
-            } else {
-
-                if (currentPlayer.CanPay(currentPlayer.Needed + turn.raise)) {
-                    currentPlayer.Money -= currentPlayer.Needed + turn.raise;
-                    currentPlayer.Bet += currentPlayer.Needed + turn.raise;
-                    currentPlayer.Needed = BiggestBet() - currentPlayer.Bet;
-                }
-
-            }
-
-            currentPlayer.Ready = false;
-
+    void UpdatePlayerUIs() {
+        foreach (Player p in players) {
+            p.RpcUpdateUI();
         }
-
-        for (int i = 1; i <= players.Length; i++) {
-
-            currentPlayer = PlayerByOrder(i);
-
-            if (GetNeeded(currentPlayer) == 0) {
-                continue;
-            }
-
-            currentPlayer.EnablePlayerTurn();
-
-            while (!currentPlayer.Ready) {
-                yield return null;
-            }
-
-            Turn turn = currentPlayer.Turn;
-
-            if (turn.fold) {
-                currentPlayer.Folded = true;
-            } else {
-
-                if (currentPlayer.CanPay(currentPlayer.Needed + turn.raise)) {
-                    currentPlayer.Money -= currentPlayer.Needed + turn.raise;
-                    currentPlayer.Bet += currentPlayer.Needed + turn.raise;
-                    currentPlayer.Needed = BiggestBet() - currentPlayer.Bet;
-                }
-
-            }
-
-            currentPlayer.Ready = false;
-
-        }
-
     }
 
-    //Other
     Player PlayerByOrder(int amount) {
         return players[(dealer + amount) % (players.Length)];
     }
@@ -262,12 +405,27 @@ public class TexasHoldEm : NetworkBehaviour {
 
         int biggest = players[0].Bet;
         for (int i = 1; i < players.Length; i++) {
+
             if (players[i].Bet > biggest) {
                 biggest = players[i].Bet;
             }
         }
-
+        biggestBet = biggest;
         return biggest;
+    }
+
+    public void Bet(Player player, int amount) {
+
+        if (player.CanPay(amount)) {
+            tableValue += amount;
+            player.Bet += amount;
+            player.Money -= amount;
+            GetNeeded(player);
+        } else {
+            Bet(player, player.Money);
+        }
+
+        
     }
 
 }

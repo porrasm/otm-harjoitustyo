@@ -1,5 +1,9 @@
 ﻿public class Turn {
 
+    public Turn() {
+        NewTurn();
+    }
+
     Player player;
     public bool fold;
     public int raise;
@@ -17,14 +21,6 @@
         fold = false;
         raise = 0;
         turn = "";
-    }
-    
-    public void Fold() {
-        fold = true;
-    }
-
-    public void Raise(int amount) {
-        raise = amount;
     }
 
 }
