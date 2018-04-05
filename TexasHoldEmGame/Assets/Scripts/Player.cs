@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using System;
 
-public class Player : NetworkBehaviour {
+public class Player : NetworkBehaviour , IComparable{
 
     [SyncVar]
     private bool ready;
@@ -35,12 +36,16 @@ public class Player : NetworkBehaviour {
     private Card[] cards;
     public Card[] Cards { get { return cards; } }
 
+    bool winner;
+    public bool Winner { get { return winner; } set { winner = value; } }
+
     [SerializeField]
     HoldemUI ui;
 
     void Start() {
         if (!isLocalPlayer) {
             transform.GetChild(0).GetComponent<Camera>().enabled = false;
+            ui.gameObject.SetActive(false);
         }
     }
 
@@ -54,17 +59,19 @@ public class Player : NetworkBehaviour {
     //Game actions
     [Command]
     public void CmdFold() {
+        print("Player: " + transform.name + " Folded.");
         turn.fold = true;
         ready = true;
     }
     [Command]
     public void CmdCall() {
+        print("Player: " + transform.name + " called.");
         turn.raise = 0;
         ready = true;
     }
     [Command]
     public void CmdRaise(int amount) {
-        print("CMDraise: " + amount);
+        print("Player: " + transform.name + " raised: " + amount);
         turn.raise = amount;
         ready = true;
     }
@@ -186,4 +193,14 @@ public class Player : NetworkBehaviour {
         transform.eulerAngles = rotation;
     }
 
+    public int CompareTo(object obj) {
+        Player other = (Player)obj;
+        
+        if (other.Hand - hand < 0) {
+            return -1;
+        } else if (other.Hand - hand == 0) {
+            return 0;
+        }
+        return 1;
+    }
 }

@@ -22,7 +22,9 @@ public class HoldemAI : Player {
         }
         Turn.NewTurn();
 
-        Money = Needed + 1;
+        if (Money < Needed) {
+            Money = Needed * 2;
+        }
         Turn.raise = 0;
         Ready = true;
     }

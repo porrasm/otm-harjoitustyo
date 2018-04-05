@@ -144,70 +144,13 @@ public class CardObject : NetworkBehaviour {
             break;
         }
 
-        Texture suitTexture = Resources.Load("Cards/" + suitString) as Texture;
-        Texture numberTexture = Resources.Load("Cards/" + card.Number) as Texture;
+        suit.GetComponent<Renderer>().material.mainTexture = Tools.GetSuitTexture(card);
+        number.GetComponent<Renderer>().material.mainTexture = Tools.GetNumberTexture(card);
 
-        if (suit == null) {
-            print("Suit is null");
-        }
-
-        suit.GetComponent<Renderer>().material.mainTexture = suitTexture;
-        number.GetComponent<Renderer>().material.mainTexture = numberTexture;
-
-        if (card.Suit == 2 || card.Suit == 3) {
-            suit.GetComponent<Renderer>().material.color = Color.red;
-            number.GetComponent<Renderer>().material.color = Color.red;
-        } else {
-            suit.GetComponent<Renderer>().material.color = Color.black;
-            number.GetComponent<Renderer>().material.color = Color.black;
-        }
+        suit.GetComponent<Renderer>().material.color = Tools.CardColor(card);
+        number.GetComponent<Renderer>().material.color = Tools.CardColor(card);
 
         initialized = true;
-
-        //RpcSetCard(newCard);
-    }
-    [ClientRpc]
-    public void RpcSetCard(Card newCard) {
-        print("Setting card");
-
-        card = newCard;
-
-        string suitString = "";
-
-        switch (card.Suit) {
-
-            case 1:
-            suitString = "spade";
-            break;
-            case 2:
-            suitString = "heart";
-            break;
-            case 3:
-            suitString = "diamond";
-            break;
-            case 4:
-            suitString = "club";
-            break;
-            default:
-            suitString = "";
-            break;
-        }
-
-        print("Card: " + card.Number + " of " + suitString + "s");
-
-        Texture suitTexture = Resources.Load("Cards/" + suitString) as Texture;
-        Texture numberTexture = Resources.Load("Cards/" + card.Number) as Texture;
-
-        suit.GetComponent<Renderer>().material.mainTexture = suitTexture;
-        number.GetComponent<Renderer>().material.mainTexture = numberTexture;
-
-        if (card.Number == 2 | card.Number == 3) {
-            suit.GetComponent<Renderer>().material.color = Color.red;
-            number.GetComponent<Renderer>().material.color = Color.red;
-        } else {
-            suit.GetComponent<Renderer>().material.color = Color.black;
-            number.GetComponent<Renderer>().material.color = Color.black;
-        }
     }
 
     public void DisableCard() {

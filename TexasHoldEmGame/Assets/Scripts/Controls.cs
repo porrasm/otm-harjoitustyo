@@ -10,6 +10,8 @@ public class Controls : NetworkBehaviour {
     [SerializeField]
     private Transform cam;
 
+    ScoreboardUI scoreboard;
+
     private Quaternion chTarget;
     private Quaternion camTarget;
 
@@ -18,6 +20,8 @@ public class Controls : NetworkBehaviour {
         if (!isLocalPlayer) {
             return;
         }
+
+        scoreboard = GameObject.FindGameObjectWithTag("Scoreboard").GetComponent<ScoreboardUI>();
 
         transform.rotation = Quaternion.Euler(0, 0, 0);
 
@@ -33,6 +37,14 @@ public class Controls : NetworkBehaviour {
 
         if (!isLocalPlayer) {
             return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab)) {
+            scoreboard.ShowScoreBoard(true);
+        }
+
+        if (Input.GetKeyUp(KeyCode.Tab)) {
+            scoreboard.ShowScoreBoard(false);
         }
 
         CheckCamera();

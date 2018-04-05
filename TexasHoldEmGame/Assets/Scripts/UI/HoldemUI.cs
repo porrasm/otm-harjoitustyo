@@ -44,12 +44,12 @@ public class HoldemUI : MonoBehaviour {
             if (cardSuit.sprite != null) { continue; }
             Image cardNumber = cardObject.GetChild(1).GetComponent<Image>();
 
-            Color cardColor = CardColor(card);
+            Color cardColor = Tools.CardColor(card);
 
-            cardSuit.sprite = GetSuitSprite(card);
+            cardSuit.sprite = Tools.GetSuitSprite(card);
             cardSuit.color = cardColor;
 
-            cardNumber.sprite = GetNumberSprite(card);
+            cardNumber.sprite = Tools.GetNumberSprite(card);
             cardNumber.color = cardColor;
 
         }
@@ -66,9 +66,9 @@ public class HoldemUI : MonoBehaviour {
         //Text fields
         string callText;
         if (player.Needed >= player.Money) {
-            callText = IntToMoney(player.Money);
+            callText = Tools.IntToMoney(player.Money);
         } else {
-            callText = IntToMoney(player.Needed);
+            callText = Tools.IntToMoney(player.Needed);
         }
 
         if (player.Folded) {
@@ -80,10 +80,10 @@ public class HoldemUI : MonoBehaviour {
         }
 
         
-        bet.text = "Bet: " + IntToMoney(player.Bet);
-        money.text = "Money: " + IntToMoney(player.Money);      
+        bet.text = "Bet: " + Tools.IntToMoney(player.Bet);
+        money.text = "Money: " + Tools.IntToMoney(player.Money);      
         raiseAmount.transform.GetChild(1).GetComponent<Text>().text = "0.00";
-        tableAmount.text = "Table: " + IntToMoney(game.TableValue);
+        tableAmount.text = "Table: " + Tools.IntToMoney(game.TableValue);
     }
 
     public void EnableUI(bool enable) {
@@ -121,40 +121,6 @@ public class HoldemUI : MonoBehaviour {
         raiseAmount.interactable = false;
     }
 
-    public string IntToMoney(int amount) {
-        double money = 1.0 * amount / 100;
-        return DecimalPlaceNoRounding(money, 2);
-    }
-    string DecimalPlaceNoRounding(double d, int decimalPlaces = 2) {
-        d = d * Math.Pow(10, decimalPlaces);
-        d = Math.Truncate(d);
-        d = d / Math.Pow(10, decimalPlaces);
-        return string.Format("{0:N" + Math.Abs(decimalPlaces) + "}", d);
-    }
-    public int MoneyToInt(string moneyString) {
-
-        double money = Convert.ToDouble(moneyString);
-        money = Math.Truncate(100 * money) / 100;
-        money *= 100;
-
-        return (int) money;
-    }
-
-    public Sprite GetSuitSprite(Card card) {
-        return Resources.Load<Sprite>("Cards/" + card.SuitToString().ToLower());
-    }
-    public Sprite GetNumberSprite(Card card) {
-        return Resources.Load<Sprite>("Cards/" + card.Number);
-    }
-    public Color CardColor(Card card) {
-
-        if (card.Suit == 2 || card.Suit == 3) {
-            return Color.red;
-        } else {
-            return Color.black;
-        }
-
-    }
 
     //Actions
     public void CallCheck() {
@@ -165,7 +131,7 @@ public class HoldemUI : MonoBehaviour {
 
         if (!RaiseCheck()) { return; }
 
-        int amount = MoneyToInt(raiseAmount.text);
+        int amount = Tools.MoneyToInt(raiseAmount.text);
         print("Raised: " + amount);
         player.CmdRaise(amount);
     }
