@@ -25,6 +25,10 @@ public class Player : NetworkBehaviour {
     private int needed;
     public int Needed { get { return needed; } set { needed = value; } }
 
+    [SyncVar]
+    private double hand;
+    public double Hand { get { return hand; } set { hand = value; } }
+
     private Turn turn;
     public Turn Turn { get { return turn; } set { turn = value; } }
 
@@ -33,6 +37,12 @@ public class Player : NetworkBehaviour {
 
     [SerializeField]
     HoldemUI ui;
+
+    void Start() {
+        if (!isLocalPlayer) {
+            transform.GetChild(0).GetComponent<Camera>().enabled = false;
+        }
+    }
 
     void Update() {
         if (!isLocalPlayer) { return; }
@@ -156,6 +166,7 @@ public class Player : NetworkBehaviour {
         if (!isLocalPlayer) { return; }
         ui.UpdateUI();
         ui.EnableUI(false);
+        ui.ResetUI();
     }
 
     public void SetPlayerPosition(Transform position) {

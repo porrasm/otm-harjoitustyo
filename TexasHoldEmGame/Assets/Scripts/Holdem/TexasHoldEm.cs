@@ -20,6 +20,9 @@ public class TexasHoldEm : NetworkBehaviour {
     bool canContinue;
     int roundAmount;
 
+    [SerializeField]
+    bool betting;
+
     string gameState;
 
     private int smallBlind = 10;
@@ -89,6 +92,7 @@ public class TexasHoldEm : NetworkBehaviour {
 
                 for (int i = 0; i < 10 - players.Length; i++) {
                     GameObject newAI = Instantiate(AIPrefab);
+                    newAI.transform.name = "AI Player " + (i + 1);
                     NetworkServer.Spawn(newAI);
                 }
 
@@ -147,9 +151,11 @@ public class TexasHoldEm : NetworkBehaviour {
         //Blinds
         print("GAME: Paying blinds...");
         yield return new WaitForSeconds(1);
+        GetNeeded(PlayerByOrder(1));
         Bet(PlayerByOrder(1), smallBlind);
         UpdatePlayerUIs();
         yield return new WaitForSeconds(1);
+        GetNeeded(PlayerByOrder(2));
         Bet(PlayerByOrder(2), bigBlind);
         UpdatePlayerUIs();
         yield return new WaitForSeconds(1);
@@ -168,7 +174,9 @@ public class TexasHoldEm : NetworkBehaviour {
             }
         }
 
-        UpdatePlayerUIs();
+        UpdatePlayerHands();
+        yield return new WaitForSeconds(0.5f);
+        UpdatePlayerUIs();  
         yield return new WaitForSeconds(1);
 
         //Betting round 1
@@ -185,11 +193,15 @@ public class TexasHoldEm : NetworkBehaviour {
         for (int i = 0; i < 3; i++) {
             deck.GetCard();
             card = deck.GetCard();
+            GivePlayersCard(card);
             table.SpawnCard(gameObject, card, table.GetCardPosition(i));
+            UpdatePlayerUIs();
             yield return new WaitForSeconds(1);
         }
-        UpdatePlayerUIs();
 
+        UpdatePlayerHands();
+        yield return new WaitForSeconds(0.5f);
+        UpdatePlayerUIs();
         yield return new WaitForSeconds(1);
 
         //Betting round 2
@@ -205,7 +217,10 @@ public class TexasHoldEm : NetworkBehaviour {
         print("GAME: River, first 4 cards.");
         deck.GetCard();
         card = deck.GetCard();
+        GivePlayersCard(card);
         table.SpawnCard(gameObject, card, table.GetCardPosition(3));
+        UpdatePlayerHands();
+        yield return new WaitForSeconds(0.5f);
         UpdatePlayerUIs();
         yield return new WaitForSeconds(2);
 
@@ -222,7 +237,10 @@ public class TexasHoldEm : NetworkBehaviour {
         print("GAME: Turn, all 5 cards.");
         deck.GetCard();
         card = deck.GetCard();
+        GivePlayersCard(card);
         table.SpawnCard(gameObject, card, table.GetCardPosition(4));
+        UpdatePlayerHands();
+        yield return new WaitForSeconds(0.5f);
         UpdatePlayerUIs();
         yield return new WaitForSeconds(2);
 
@@ -246,14 +264,14 @@ public class TexasHoldEm : NetworkBehaviour {
             CardObject cardObject = c.GetComponent<CardObject>();
 
             if (cardObject.Owner == gameObject) { continue; }
-
+            if (cardObject.Owner.GetComponent<Player>().Folded) { continue; }
             cardObject.TurnCard();
             yield return new WaitForSeconds(defaultSmallWaitTime);
 
         }
 
         //Winning and money
-        print("GAME: Winner is: ");
+        Winner();
         yield return new WaitForSeconds(2);
         //End round
         print("GAME: Killing cards...");
@@ -270,6 +288,10 @@ public class TexasHoldEm : NetworkBehaviour {
  
     //Betting
     IEnumerator BetRound() {
+
+        if (!betting) {
+            canContinue = true;
+        }
 
         //Betting round
         print("GAME: Betting start");
@@ -346,6 +368,33 @@ public class TexasHoldEm : NetworkBehaviour {
         Bet(currentPlayer, currentPlayer.Needed + turn.raise);
     }
 
+    public void Winner() {
+        currentPlayer = players[0];
+        bool tie = false;
+        print("GAME: Results");
+        for (int i = 1; i < players.Length; i++) {
+
+            print("GAME: " + players[i].name + ": " + Hand.HandToString(players[i].Hand));
+
+            if (players[i].Hand == currentPlayer.Hand) {
+                tie = true;
+            }
+
+            if (players[i].Hand > currentPlayer.Hand) {
+                currentPlayer = players[i];
+            }
+        }
+
+        currentPlayer.Money += tableValue;
+
+        print("GAME: Winner is: " + currentPlayer.name + " with " + Hand.HandToString(currentPlayer.Hand));
+    }
+
+    void GivePlayersCard(Card card) {
+        foreach (Player p in players) {
+            p.GiveCard(card);
+        }
+    }
 
     //Other Methods
     public void SetPlayerPositions() {
@@ -360,10 +409,12 @@ public class TexasHoldEm : NetworkBehaviour {
 
     public void ResetPlayers() {
         foreach (Player p in players) {
+            p.Folded = false;
             p.Bet = 0;
             p.Needed = 0;
             p.ResetCards();
-            p.RpcResetUI();
+            p.Hand = -1;
+            p.RpcResetUI();      
         }
     }
 
@@ -384,6 +435,15 @@ public class TexasHoldEm : NetworkBehaviour {
         foreach (Player p in players) {
             p.RpcUpdateUI();
         }
+    }
+
+    void UpdatePlayerHands() {
+
+        foreach (Player player in players) {
+            if (player.Folded) { continue; }
+            player.Hand = Hand.GetHighestHand(player.Cards);
+        }
+
     }
 
     Player PlayerByOrder(int amount) {
@@ -411,6 +471,11 @@ public class TexasHoldEm : NetworkBehaviour {
             }
         }
         biggestBet = biggest;
+
+        if (biggestBet < bigBlind) {
+            biggestBet = bigBlind;
+        }
+
         return biggest;
     }
 
@@ -424,7 +489,6 @@ public class TexasHoldEm : NetworkBehaviour {
         } else {
             Bet(player, player.Money);
         }
-
         
     }
 

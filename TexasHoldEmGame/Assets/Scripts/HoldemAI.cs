@@ -23,7 +23,6 @@ public class HoldemAI : Player {
         Turn.NewTurn();
 
         Money = Needed + 1;
-        print("Holdem AI Checks: " + Needed);
         Turn.raise = 0;
         Ready = true;
     }

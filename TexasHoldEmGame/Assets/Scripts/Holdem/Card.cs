@@ -1,4 +1,6 @@
-﻿public class Card {
+﻿using System;
+
+public class Card : IComparable {
 
     int suit;
     public int Suit { get { return suit; } }
@@ -76,4 +78,8 @@
 
     }
 
+    public int CompareTo(object obj) {
+        Card other = (Card) obj;
+        return other.Number - number;
+    }
 }

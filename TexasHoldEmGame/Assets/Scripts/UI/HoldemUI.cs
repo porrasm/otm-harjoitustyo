@@ -10,7 +10,7 @@ public class HoldemUI : MonoBehaviour {
     TexasHoldEm game;
 
     [SerializeField]
-    Image cardSuit1, cardSuit2, cardNumber1, cardNumber2;
+    Transform cardParent;
 
     [SerializeField]
     Button callButton, raiseButton, foldButton;
@@ -32,34 +32,27 @@ public class HoldemUI : MonoBehaviour {
     public void UpdateUI() {
 
         //Cards
-        Card card1 = player.Cards[0];
-        Card card2 = player.Cards[1];
+        Card[] cards = player.Cards;
 
-        if (cardNumber1.sprite == null && card2 != null) {
+        for (int i = 0; i < cards.Length; i++) {
 
-            cardSuit1.sprite = Resources.Load<Sprite>("Cards/" + card1.SuitToString().ToLower());
-            cardSuit2.sprite = Resources.Load<Sprite>("Cards/" + card2.SuitToString().ToLower());
+            Card card = cards[i];
+            if (card == null) { continue; }
+            Transform cardObject = cardParent.GetChild(i);
 
-            cardNumber1.sprite = Resources.Load<Sprite>("Cards/" + card1.Number);
-            cardNumber2.sprite = Resources.Load<Sprite>("Cards/" + card2.Number);
+            Image cardSuit = cardObject.GetChild(0).GetComponent<Image>();
+            if (cardSuit.sprite != null) { continue; }
+            Image cardNumber = cardObject.GetChild(1).GetComponent<Image>();
 
-            if (card1.Suit == 2 || card1.Suit == 3) {
-                cardSuit1.color = Color.red;
-                cardNumber1.color = Color.red;
-            } else {
-                cardSuit1.color = Color.black;
-                cardNumber1.color = Color.black;
-            }
+            Color cardColor = CardColor(card);
 
-            if (card2.Suit == 2 || card2.Suit == 3) {
-                cardSuit2.color = Color.red;
-                cardNumber2.color = Color.red;
-            } else {
-                cardSuit2.color = Color.black;
-                cardNumber2.color = Color.black;
-            }
+            cardSuit.sprite = GetSuitSprite(card);
+            cardSuit.color = cardColor;
+
+            cardNumber.sprite = GetNumberSprite(card);
+            cardNumber.color = cardColor;
+
         }
-
         //Buttons
 
         if (player.Needed == 0) {
@@ -78,10 +71,17 @@ public class HoldemUI : MonoBehaviour {
             callText = IntToMoney(player.Needed);
         }
 
-        hand.text = "High Card";
+        if (player.Folded) {
+            hand.text = "Folded";
+            callAmount.text = "0.00";
+        } else {
+            hand.text = Hand.HandToString(player.Hand);
+            callAmount.text = callText;
+        }
+
+        
         bet.text = "Bet: " + IntToMoney(player.Bet);
-        money.text = "Money: " + IntToMoney(player.Money);
-        callAmount.text = callText;
+        money.text = "Money: " + IntToMoney(player.Money);      
         raiseAmount.transform.GetChild(1).GetComponent<Text>().text = "0.00";
         tableAmount.text = "Table: " + IntToMoney(game.TableValue);
     }
@@ -95,11 +95,22 @@ public class HoldemUI : MonoBehaviour {
 
     public void ResetUI() {
 
-        cardSuit1.sprite = null;
-        cardSuit2.sprite = null;
+        for (int i = 0; i < cardParent.childCount; i++) {
 
-        cardNumber1.sprite = null;
-        cardNumber2.sprite = null;
+            Transform card = cardParent.GetChild(i);
+
+            Image cardSuit = card.GetChild(0).GetComponent<Image>();
+            Image cardNumber = card.GetChild(1).GetComponent<Image>();
+
+            cardSuit.sprite = null;
+            cardSuit.color = new Color(0, 0, 0, 0);
+
+            cardNumber.sprite = null;
+            cardNumber.color = new Color(0, 0, 0, 0);
+
+        }
+
+        hand.text = "Nothing";
 
     }
 
@@ -120,32 +131,29 @@ public class HoldemUI : MonoBehaviour {
         d = d / Math.Pow(10, decimalPlaces);
         return string.Format("{0:N" + Math.Abs(decimalPlaces) + "}", d);
     }
-    public int MoneyToInt(string money) {
+    public int MoneyToInt(string moneyString) {
 
-        bool dec = false;
-        string hund = "";
-        string cents = "";
+        double money = Convert.ToDouble(moneyString);
+        money = Math.Truncate(100 * money) / 100;
+        money *= 100;
 
-        foreach (char c in money) {
+        return (int) money;
+    }
 
-            if (c == '.') {
-                dec = true;
-                continue;
-            }
+    public Sprite GetSuitSprite(Card card) {
+        return Resources.Load<Sprite>("Cards/" + card.SuitToString().ToLower());
+    }
+    public Sprite GetNumberSprite(Card card) {
+        return Resources.Load<Sprite>("Cards/" + card.Number);
+    }
+    public Color CardColor(Card card) {
 
-            if (dec) {
-                cents += c;
-            } else {
-                hund += c;
-            }
-
+        if (card.Suit == 2 || card.Suit == 3) {
+            return Color.red;
+        } else {
+            return Color.black;
         }
 
-        int amount = Int32.Parse(hund) * 100;
-        if (!cents.Equals("")) {
-            amount += Int32.Parse(cents);
-        }
-        return amount;
     }
 
     //Actions
