@@ -42,7 +42,7 @@ Voit testata moninpeliä myös itseksesi. Tämä tapahtuu buildaamalla sovellus,
 
 Muista painaa Unity editorissa P vasta sen jälkeen kun olet liittynyt peliin toisella pelaajalla. Muista myös painaa SPACE molemmissa peleissä.
 
-### Projektin buildaus
+### Projektin buildaus, testaus MACilla
 
 Koska käytän koneellani Windowsia, enkä ole ehtinyt asentaa Unityn Mac modulea, en pysty buildaamaan peliä Macille. Tämä on kuitenkin hyvin yksinkertaista tehdä.
 
