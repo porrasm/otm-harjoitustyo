@@ -9,6 +9,7 @@ TagManager:
   - Scripts
   - Card
   - Scoreboard
+  - NetworkManager
   layers:
   - Default
   - TransparentFX

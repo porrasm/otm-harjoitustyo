@@ -13,17 +13,24 @@ public class TexasHoldEm : NetworkBehaviour {
     public int TableValue { get { return tableValue; } }
     Player[] players;
     public Player[] Players { get { return players; } }
+
     Player currentPlayer;
+
     bool roundIsOn;
+    public bool RoundIsOn { get { return roundIsOn; } }
+
     GameObject AIPrefab;
+
+    int buyIn;
+    public int BuyIn { get { return buyIn; } }
 
     ScoreboardUI scoreboard;
 
     bool gameIsReady;
+    public bool GameIsReady { get { return gameIsReady; } }
+
     bool canContinue;
     int roundAmount;
-
-    
 
     string gameState;
 
@@ -57,17 +64,16 @@ public class TexasHoldEm : NetworkBehaviour {
         if (!isServer) { return; }
 
         if (Input.GetKeyDown(KeyCode.P)) {
-            UpdatePlayers();
-            StartCoroutine(PlaceholderStart());
+            PlaceHolderStart();
         }
 
-        if (!roundIsOn && roundAmount > 0 && gameIsReady) {
-            StartCoroutine(StartHoldemRound());
+        if (!roundIsOn && roundAmount > 0 && GameIsReady) {
+            StartHoldemRound();
         }
 
     }
 
-    void UpdatePlayers() {
+    public void UpdatePlayers() {
         GameObject[] p = GameObject.FindGameObjectsWithTag("Player");
         players = new Player[p.Length];
         for (int i = 0; i < p.Length; i++) {
@@ -86,9 +92,14 @@ public class TexasHoldEm : NetworkBehaviour {
 
 
     //Game
-    IEnumerator PlaceholderStart() {
+    public void PlaceHolderStart() {
+        UpdatePlayers();
+        StartCoroutine(PlaceholderStartCoroutine());
+    }
+    IEnumerator PlaceholderStartCoroutine() {
 
         gameState = "Game starting...";
+        buyIn = 2000;
 
         while (true) {
 
@@ -115,7 +126,7 @@ public class TexasHoldEm : NetworkBehaviour {
                 SetPlayerPositions();
 
                 foreach (Player p in players) {
-                    p.Money = 2000;
+                    p.Money = buyIn;
                     p.Ready = false;
                 }
 
@@ -131,8 +142,11 @@ public class TexasHoldEm : NetworkBehaviour {
 
     }
 
-   
-    IEnumerator StartHoldemRound() {
+   public void StartHoldemRound() {
+        roundIsOn = true;
+        StartCoroutine(StartHoldemRoundCoroutine());
+    }
+    IEnumerator StartHoldemRoundCoroutine() {
 
         if (roundIsOn) {
             yield break;
