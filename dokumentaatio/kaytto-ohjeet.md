@@ -4,11 +4,7 @@
 Pelin viimesimmän buildatun version Windowsille tai MACille voi ladata tästä:
 [holdem.17.04.18.zip](http://www.mediafire.com/file/p30xsl670k13gso/holdem.17.04.18.zip)
 
-HUOM: Jotkin viruksentorjunta ohjelmistot saattavat varoittaa ohjelmasta.
-
-### MAC
-
-MAC versio on nyt samassa Windows version kanssa.
+HUOM: Jotkin viruksentorjunta ohjelmistot saattavat varoittaa ohjelmasta. Myös esim VirusTotal.com varoittaa ohjelmasta. Kyseessä ei ole virus vaan todennäköisesti false positive sillä sama ongelma esiintyy useilla eri projekteilla ja useilla tietokoneilla Unity pelien Windows versioissa.
 
 ## Pelin Aloitus:
 
