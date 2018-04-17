@@ -1,3 +1,5 @@
+https://imgur.com/a/lPJ1I
+
 # Arkkitehtuurikuvaus
 
 ## Rakenne
@@ -10,4 +12,4 @@
 
 Luokkakaavio
 
-<img src="https://i.imgur.com/mxOk3ER.jpg" width="600">
+<img src="https://imgur.com/a/lPJ1I" width="400">

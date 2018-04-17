@@ -8,3 +8,5 @@
 | 4.4. | 3.5   | Panostus, UI toimintojen asettaminen. Peli toimii nyt käytännössä, mutta voittajaa ei lasketa eikä voittoja palauteta. |0
 | 5.4. | 6.5   | Hand evaluator, joka tunnistaa onko pelaajalla suora, kolmoset etc. Scoreboard, peli tunnistaa nyt voittajan ja voittaja saa rahat.|
 | 10.4. | 2   | Dokumentaatio ja testien aloitus.|
+| 17.4 | 2 | Siistintää yms. |
+| Yhteensä | 25.5 | | |

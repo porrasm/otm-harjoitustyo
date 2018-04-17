@@ -1,15 +1,14 @@
 ## Pelin lataus
 
 ### Windows
-Pelin viimesimmän buildatun version voi ladata tästä:
-[tästä](https://drive.google.com/open?id=1it7eoycKKE_Dtn377UHfCfEqNNkFKwAJ)
-Toisaalta voit myös buildata sovelluksen suoraan git projektista. Ohjeet [täällä](https://github.com/porrasm/otm-harjoitustyo/blob/master/ohjaajille.md)
-Pura zip tiedosto ja avaa 'holdem.exe'.
+Pelin viimesimmän buildatun version Windowsille tai MACille voi ladata tästä:
+[holdem.17.04.18.zip](http://www.mediafire.com/file/p30xsl670k13gso/holdem.17.04.18.zip)
+
+HUOM: Jotkin viruksentorjunta ohjelmistot saattavat varoittaa ohjelmasta.
 
 ### MAC
 
-Ohjeet projektin testaukseen MACilla [täällä](https://github.com/porrasm/otm-harjoitustyo/blob/master/ohjaajille.md)
-
+MAC versio on nyt samassa Windows version kanssa.
 
 ## Pelin Aloitus:
 
