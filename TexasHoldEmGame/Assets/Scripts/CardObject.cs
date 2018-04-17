@@ -44,6 +44,7 @@ public class CardObject : NetworkBehaviour {
 
     }
 
+	[Command]
     void CmdUpdateCard() {
         RpcSetOwner(owner);
         RpcSetCard(card.Suit, card.Number);
@@ -92,9 +93,11 @@ public class CardObject : NetworkBehaviour {
         this.owner = player;
         this.card = card;
     }
+	[ClientRpc]
     public void RpcSetOwner(GameObject player) {
         this.owner = player;
     }
+	[ClientRpc]
     public void RpcSetCard(int suit, int number) {
         card = new Card();
         card.SetCard(suit, number);

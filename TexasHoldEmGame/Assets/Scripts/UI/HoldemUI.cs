@@ -148,6 +148,7 @@ public class HoldemUI : MonoBehaviour {
             raiseAmount.text = "0.00";
             return false;
         }
+
         return true;
     }
 }

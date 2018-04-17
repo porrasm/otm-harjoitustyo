@@ -5,11 +5,18 @@ using UnityEngine.Networking;
 
 public class HoldemAI : Player {
 
+    public bool aiEnabled;
+
     void Start() {
         Ready = true;
+        aiEnabled = true;
     }
 
     public override void EnablePlayerTurn(bool enable, bool payUp) {
+
+        if (!aiEnabled) {
+            return;
+        }
 
         if (!enable) {
             return;

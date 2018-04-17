@@ -139,18 +139,17 @@ public class TexasHoldEm : NetworkBehaviour {
         gameIsReady = true;
         roundAmount = 30;
         roundIsOn = false;
-
+        StartHoldemRound();
     }
 
    public void StartHoldemRound() {
+        if (roundIsOn) {
+            return;
+        }
         roundIsOn = true;
-        StartCoroutine(StartHoldemRoundCoroutine());
+      //  StartCoroutine(StartHoldemRoundCoroutine());
     }
     IEnumerator StartHoldemRoundCoroutine() {
-
-        if (roundIsOn) {
-            yield break;
-        }
 
         roundIsOn = true;
         print("GAME: Starting round.");
