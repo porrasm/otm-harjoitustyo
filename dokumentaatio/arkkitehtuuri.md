@@ -10,4 +10,4 @@
 
 Luokkakaavio
 
-<img src="https://i.imgur.com/n29Hxgr.jpg" width="400">
+<img src="https://i.imgur.com/mxOk3ER.jpg" width="400">
