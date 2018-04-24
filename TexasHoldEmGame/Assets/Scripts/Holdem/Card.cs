@@ -18,7 +18,6 @@ public class Card : IComparable {
         string number = NumberToString();
 
         return number + " of " + suit + "s";
-        
     }
 
     public string SuitToString() {
@@ -40,12 +39,11 @@ public class Card : IComparable {
             suitString = "Club";
             break;
             default:
-            suitString = "";
+            suitString = string.Empty;
             break;
         }
 
         return suitString;
-
     }
 
     public string NumberToString() {
@@ -53,7 +51,7 @@ public class Card : IComparable {
         string numberString;
 
         if (number < 11) {
-            numberString = "" + number;
+            numberString = string.Empty + number;
         } else {
             switch (number) {
                 case 11:
@@ -69,17 +67,16 @@ public class Card : IComparable {
                 numberString = "Ace";
                 break;
                 default:
-                numberString = "";
+                numberString = string.Empty;
                 break;
             }
         }
 
         return numberString;
-
     }
 
     public int CompareTo(object obj) {
-        Card other = (Card) obj;
+        Card other = (Card)obj;
         return other.Number - number;
     }
 }

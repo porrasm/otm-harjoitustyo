@@ -31,7 +31,8 @@ public class HoldemUI : MonoBehaviour {
 
     public void UpdateUI() {
 
-        //Cards
+        // Cards
+
         Card[] cards = player.Cards;
 
         for (int i = 0; i < cards.Length; i++) {
@@ -51,9 +52,9 @@ public class HoldemUI : MonoBehaviour {
 
             cardNumber.sprite = Tools.GetNumberSprite(card);
             cardNumber.color = cardColor;
-
         }
-        //Buttons
+
+        // Buttons
 
         if (player.Needed == 0) {
             callButton.transform.GetChild(0).GetComponent<Text>().text = "Check";
@@ -63,7 +64,8 @@ public class HoldemUI : MonoBehaviour {
             callButton.transform.GetChild(0).GetComponent<Text>().text = "Call";
         }
 
-        //Text fields
+        // Text fields
+
         string callText;
         if (player.Needed >= player.Money) {
             callText = Tools.IntToMoney(player.Money);
@@ -75,7 +77,7 @@ public class HoldemUI : MonoBehaviour {
             hand.text = "Folded";
             callAmount.text = "0.00";
         } else {
-            hand.text = Hand.HandToString(player.Hand);
+            hand.text = player.Hand.HandString;
             callAmount.text = callText;
         }
 
@@ -107,11 +109,9 @@ public class HoldemUI : MonoBehaviour {
 
             cardNumber.sprite = null;
             cardNumber.color = new Color(0, 0, 0, 0);
-
         }
 
         hand.text = "Nothing";
-
     }
 
     public void PayupUI() {
@@ -122,7 +122,7 @@ public class HoldemUI : MonoBehaviour {
     }
 
 
-    //Actions
+    // Actions
     public void CallCheck() {
         print("Checked.");
         player.CmdCall();
@@ -140,8 +140,8 @@ public class HoldemUI : MonoBehaviour {
         player.CmdFold();
     }
     public bool RaiseCheck() {
-        Double a = 0.0;
-        bool parse = Double.TryParse(raiseAmount.text, out a);
+        double a = 0.0;
+        bool parse = double.TryParse(raiseAmount.text, out a);
 
         if (!parse) {
 

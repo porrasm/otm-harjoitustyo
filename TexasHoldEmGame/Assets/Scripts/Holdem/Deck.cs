@@ -23,9 +23,7 @@ public class Deck {
 
             cards[i] = new Card();
             cards[i].SetCard(suit, number);
-
         }
-
     }
 
     public void ShuffleDeck() {
@@ -43,9 +41,7 @@ public class Deck {
 
             cards[i] = copy[randomIndex];
             copy.RemoveAt(randomIndex);
-
         }
-
     }
 
     public Card GetCard() {
@@ -53,5 +49,4 @@ public class Deck {
         cardIndex++;
         return card;
     }
-
 }

@@ -7,10 +7,10 @@ using System;
 
 public class ScoreboardUI : NetworkBehaviour {
 
-    TexasHoldEm game;
+    private TexasHoldEm game;
 
     [SerializeField]
-    Transform playerParent;
+    private Transform playerParent;
 
     void Start() {
         if (!isServer) { return; }
@@ -26,18 +26,20 @@ public class ScoreboardUI : NetworkBehaviour {
         for (int i = 0; i < amount; i++) {
             playerParent.transform.GetChild(10 - i).gameObject.SetActive(false);
         }
-
     }
 
     public void UpdateScoreBoard() {
 
+        print("Updating scoreboard.");
+
         for (int i = 0; i < game.Players.Length; i++) {
             RpcSetOne(i, game.Players[i].name, "-", 0, game.Players[i].Money);
         }
-
     }
 
     public void RevealScoreBoard() {
+
+        print("Revealing scoreboard.");
 
         Player[] sorted = new Player[game.Players.Length];
 
@@ -52,13 +54,12 @@ public class ScoreboardUI : NetworkBehaviour {
             } else {
 
                 if (sorted[i].Winner) {
-                    RpcSetOne(i, sorted[i].name, Hand.HandToString(sorted[i].Hand), game.TableValue, sorted[i].Money);
+                    RpcSetOne(i, sorted[i].name, sorted[i].Hand.ToString(), game.TableValue, sorted[i].Money);
                 } else {
-                    RpcSetOne(i, sorted[i].name, Hand.HandToString(sorted[i].Hand), 0, sorted[i].Money);
+                    RpcSetOne(i, sorted[i].name, sorted[i].Hand.ToString(), 0, sorted[i].Money);
                 }
             }
         }
-
     }
 	
     [ClientRpc]
@@ -73,12 +74,10 @@ public class ScoreboardUI : NetworkBehaviour {
         handText.text = hand;
         winText.text = Tools.IntToMoney(win);
         moneyText.text = Tools.IntToMoney(money);
-
     }
 
-    //Client actions
+    // Client actions
     public void ShowScoreBoard(bool enable) {
         transform.GetChild(0).gameObject.SetActive(enable);
     }
-
 }

@@ -19,7 +19,7 @@ public class Table : NetworkBehaviour {
 
     GameObject cardPrefab;
 
-    //Methods
+    // Methods
     void Start() {
         cardPrefab = Resources.Load("Card") as GameObject;
 
@@ -35,9 +35,7 @@ public class Table : NetworkBehaviour {
 
             current.GetChild(0).transform.Translate(0, -0.6f, 0.5f);
             current.GetChild(1).transform.Translate(0, -0.6f, 0.5f);
-
         }
-
     }
 
     public void SpawnCard(GameObject owner, Card card) {
@@ -54,7 +52,6 @@ public class Table : NetworkBehaviour {
         }
 
         NetworkServer.Spawn(newCard);
-
     }
 
 
@@ -64,5 +61,4 @@ public class Table : NetworkBehaviour {
     public Transform GetCardPosition(int index) {
         return cardPositions.GetChild(index);
     }
-
 }

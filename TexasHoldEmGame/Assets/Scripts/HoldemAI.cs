@@ -5,16 +5,16 @@ using UnityEngine.Networking;
 
 public class HoldemAI : Player {
 
-    public bool aiEnabled;
+    public bool AiEnabled;
 
     void Start() {
         Ready = true;
-        aiEnabled = true;
+        AiEnabled = true;
     }
 
     public override void EnablePlayerTurn(bool enable, bool payUp) {
 
-        if (!aiEnabled) {
+        if (!AiEnabled) {
             return;
         }
 
@@ -32,8 +32,7 @@ public class HoldemAI : Player {
         if (Money < Needed) {
             Money = Needed * 2;
         }
-        Turn.raise = 0;
+        Turn.Raise = 0;
         Ready = true;
     }
-
 }

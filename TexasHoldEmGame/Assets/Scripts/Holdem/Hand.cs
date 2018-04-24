@@ -1,28 +1,96 @@
 ﻿using System.Collections.Generic;
 using System;
 
-public class Hand {
+public class Hand : IComparable {
 
-    public static double GetHighestHand(Card[] playerCards) {
+    private int value;
+    public int Value { get { return value; } }
+    public void SetValue(int value) {
+        this.value = value;
+        this.handString = Hand.HandToString(value);
+        kickerValues = new int[5];
+    }
 
-        //Check card amount
+    private int[] kickerValues;
+    public int[] KickerValues { get { return kickerValues; } set { kickerValues = value; } }
+
+    private string handString;
+    public string HandString { get { return handString; } set { handString = value; } }
+
+    public Hand() {
+        kickerValues = new int[5];
+    }
+
+    
+    public bool Tie(Hand other) {
+
+        if (value != other.Value) {
+            return false;
+        }
+
+        for (int i = 0; i < 5; i++) {
+            if (kickerValues[i] != other.KickerValues[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public override string ToString() {
+        return handString;
+    }
+
+    public int CompareTo(object obj) {
+
+        Hand other = (Hand)obj;
+
+        if (value > other.Value) {
+            return -1;
+        } else if (value < other.Value) {
+            return 1;
+        }
+
+        for (int i = 0; i < 5; i++) {
+
+            if (kickerValues[i] > other.KickerValues[i]) {
+                return -1;
+            } else if (kickerValues[i] < other.KickerValues[i]) {
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
+
+    // Static methods
+    public static Hand GetHighestHand(Card[] playerCards) {
+
+        // Check card amount
         int n = 0;
         foreach (Card c in playerCards) {
             if (c != null) { n++; }
         }
 
         if (n < 5) {
+
+            Hand hand = new Hand();
+
             if (playerCards[0].Number == playerCards[1].Number) {
-                return 1;
+                hand.SetValue(1);
+                return hand;
             } else {
-                return 0;
+                
+                hand.SetValue(0);
+                return hand;
             }
         }
 
-        //Determine the best hand out of the 7 cards
-        List<Double> values = new List<double>();
+        // Determine the best hand out of the 7 cards
+        List<Hand> hands = new List<Hand>();
 
-        //All cards but 2
+        // All cards but 2
         if (n == 7) {
             for (int i = 0; i < n; i++) {
                 for (int j = i + 1; j < n; j++) {
@@ -37,11 +105,9 @@ public class Hand {
                         }
                     }
 
-                    values.Add(GetHandValue(cardCombination));
-
+                    hands.Add(GetHandValue(cardCombination));
                 }
-            }
-            //All cards but 1
+            } // All cards but 1
         } else if (n == 6) {
             for (int i = 0; i < n; i++) {
 
@@ -55,8 +121,7 @@ public class Hand {
                     }
                 }
 
-                values.Add(GetHandValue(cardCombination));
-
+                hands.Add(GetHandValue(cardCombination));
             }
         } else {
             Card[] cards = new Card[5];
@@ -66,18 +131,12 @@ public class Hand {
             return GetHandValue(cards);
         }
 
+        hands.Sort();
 
-        double biggest = values[0];
-        for (int i = 1; i < values.Count; i++) {
-            if (values[i] > biggest) {
-                biggest = values[i];
-            }
-        }
-
-        return biggest;
+        return hands[0];
     }
 
-    static double GetHandValue(Card[] cards) {
+    static Hand GetHandValue(Card[] cards) {
         Array.Sort(cards);
 
         int[] amounts = NumberAmounts(cards);
@@ -125,7 +184,7 @@ public class Hand {
         return HighCardValue(cards);
     }
 
-    //Booleans
+    // Booleans
     static bool RoyalFlush(Card[] cards, bool straight, bool flush) {
 
         if (cards[0].Number != 14) {
@@ -134,7 +193,7 @@ public class Hand {
 
         return straight && flush;
     }
-    static bool StraightFlush(Boolean straight, bool flush) {
+    static bool StraightFlush(bool straight, bool flush) {
         return straight && flush;
     }
     static bool FourOfAKind(Card[] cards, int[] amounts) {
@@ -149,8 +208,8 @@ public class Hand {
         bool two = false;
 
         foreach (int i in amounts) {
-            if (i == 2) { two = true; ; }
-            if (i == 3) { three = true; ; }
+            if (i == 2) { two = true; }
+            if (i == 3) { three = true; }
         }
         return two && three;
     }
@@ -179,9 +238,7 @@ public class Hand {
                 if (straight) {
                     return true;
                 }
-                
             }
-
         }
         return false;
     }
@@ -205,39 +262,161 @@ public class Hand {
         return false;
     }
 
-    //Return Values
-    static double RoyalFlushValue(Card[] cards) {
-        return 9;
+    // Return Values
+    static Hand RoyalFlushValue(Card[] cards) {
+
+        Hand hand = new Hand();
+        hand.SetValue(9);
+
+        return hand;
     }
-    static double StraightFlushValue(Card[] cards) {
-        return 8;
+    static Hand StraightFlushValue(Card[] cards) {
+
+        Hand hand = new Hand();
+        hand.SetValue(8);
+
+        hand.KickerValues[0] = cards[0].Number;
+
+        return hand;
     }
-    static double FourOfAKindValue(Card[] cards) {
-        return 7;
+    static Hand FourOfAKindValue(Card[] cards) {
+
+        Hand hand = new Hand();
+        hand.SetValue(7);
+
+        if (cards[0].Number == cards[1].Number) {
+            hand.KickerValues[0] = cards[0].Number;
+            hand.KickerValues[1] = cards[4].Number;
+        } else {
+            hand.KickerValues[0] = cards[4].Number;
+            hand.KickerValues[1] = cards[0].Number;
+        }
+
+        return hand;
     }
-    static double FullHouseValue(Card[] cards) {
-        return 6;
+    static Hand FullHouseValue(Card[] cards) {
+
+        Hand hand = new Hand();
+        hand.SetValue(6);
+
+        if (cards[0].Number == cards[1].Number && cards[0].Number == cards[2].Number) {
+            hand.KickerValues[0] = cards[0].Number;
+            hand.KickerValues[1] = cards[4].Number;
+        } else {
+            hand.KickerValues[0] = cards[4].Number;
+            hand.KickerValues[1] = cards[0].Number;
+        }
+
+        return hand;
     }
-    static double FlushValue(Card[] cards) {
-        return 5;
+    static Hand FlushValue(Card[] cards) {
+
+        Hand hand = new Hand();
+        hand.SetValue(5);
+
+        for (int i = 0; i < 5; i++) {
+            hand.KickerValues[i] = cards[i].Number;
+        }
+
+        return hand;
     }
-    static double StraightValue(Card[] cards) {
-        return 4;
+    static Hand StraightValue(Card[] cards) {
+
+        Hand hand = new Hand();
+        hand.SetValue(4);
+
+        hand.KickerValues[0] = cards[0].Number;
+
+        return hand;
     }
-    static double ThreeOfAKindValue(Card[] cards) {
-        return 3;
+    static Hand ThreeOfAKindValue(Card[] cards) {
+
+        Hand hand = new Hand();
+        hand.SetValue(3);
+
+        int index = 1;
+
+        for (int i = 0; i < 3; i++) {
+
+            if (i >= 3) {
+                hand.KickerValues[index] = cards[i].Number;
+                index++;
+                break;
+            }
+
+            if (cards[i].Number == cards[i + 1].Number && cards[i].Number == cards[i + 2].Number) {
+                hand.KickerValues[0] = cards[i].Number;
+                i += 2;
+            } else {
+                hand.KickerValues[index] = cards[i].Number;
+                index++;
+            }
+        }
+
+        return hand;
     }
-    static double TwoPairValue(Card[] cards) {
-        return 2;
+    static Hand TwoPairValue(Card[] cards) {
+
+        Hand hand = new Hand();
+        hand.SetValue(2);
+
+        int index = 0;
+
+        for (int i = 0; i < 4; i++) {
+
+            if (i == 4) {
+                hand.KickerValues[index] = cards[i].Number;
+                break;
+            }
+
+            if (cards[i].Number == cards[i + 1].Number) {
+                hand.KickerValues[index] = cards[i].Number;
+                i++;
+                index++;
+            } else {
+                hand.KickerValues[2] = cards[i].Number;
+            }
+        }
+
+        return hand;
     }
-    static double PairValue(Card[] cards) {
-        return 1;
+    static Hand PairValue(Card[] cards) {
+
+        Hand hand = new Hand();
+        hand.SetValue(1);
+
+        int index = 1;
+
+        for (int i = 0; i < 5; i++) {
+
+            if (i == 4) {
+                hand.KickerValues[index] = cards[i].Number;
+                break;
+            }
+
+            if (cards[i].Number == cards[i + 1].Number) {
+                hand.KickerValues[0] = cards[i].Number;
+                i++;
+            } else {
+                hand.KickerValues[index] = cards[i].Number;
+            }
+        }
+
+        return hand;
     }
-    static double HighCardValue(Card[] cards) {
-        return 0;
+    static Hand HighCardValue(Card[] cards) {
+
+        Hand hand = new Hand();
+        hand.SetValue(0);
+
+        for (int i = 0; i < 5; i++) {
+            hand.KickerValues[i] = cards[i].Number;
+        }
+
+        return hand;
     }
 
-    //Other
+    // Other
     static int[] SuitAmounts(Card[] cards) {
 
         int[] suits = new int[4];
@@ -257,12 +436,11 @@ public class Hand {
         }
 
         return amounts;
-
     }
 
     public static string HandToString(double value) {
 
-        string hand = "";
+        string hand = string.Empty;
         if (value < 0) {
             hand = "Nothing";
         } else if (value < 1) {

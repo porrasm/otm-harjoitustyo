@@ -9,4 +9,6 @@
 | 5.4. | 6.5   | Hand evaluator, joka tunnistaa onko pelaajalla suora, kolmoset etc. Scoreboard, peli tunnistaa nyt voittajan ja voittaja saa rahat.|
 | 10.4. | 2   | Dokumentaatio ja testien aloitus.|
 | 17.4 | 2 | Siistintää yms. |
-| Yhteensä | 25.5 | | |
+| 23.4 | 2 | Hand evaluatorin edistäminen |
+| 24.4 | 3 | Hand evaluatorin edistäminen, yleistä siistintää, stylecopin käyttöönotto sekä stylecop virheiden korjaus |
+| Yhteensä | 30.5 | | |

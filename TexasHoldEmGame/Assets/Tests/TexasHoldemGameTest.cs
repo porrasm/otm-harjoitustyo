@@ -36,21 +36,20 @@ public class TexasHoldemGameTest {
         yield return new WaitForSeconds(2);
 
         Assert.IsTrue(game.RoundIsOn);
-        //AI 
+
+        // AI 
         Assert.IsTrue(game.Players.Length == 10);
 
         foreach (Player p in game.Players) {
 
             Assert.IsTrue(p.Money == game.BuyIn);
-
         }
-
     }
 
     [UnityTest]
     public IEnumerator GameProgressesCorrectly() {
 
-        //Scene setup
+        // Scene setup
         SceneManager.LoadScene("default", LoadSceneMode.Single);
 
         yield return new WaitForSeconds(1);
@@ -77,18 +76,13 @@ public class TexasHoldemGameTest {
         yield return new WaitForSeconds(2);
 
         Assert.IsTrue(game.RoundIsOn);
-        //AI 
+
+        // AI 
         Assert.IsTrue(game.Players.Length == 10);
 
         foreach (Player p in game.Players) {
 
             Assert.IsTrue(p.Money == game.BuyIn);
-
         }
-
-        //Game progression
-
     }
-
-
 }

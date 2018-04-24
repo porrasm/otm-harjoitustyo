@@ -5,7 +5,7 @@ using System;
 
 public class Tools {
 
-    //UI
+    // UI
     public static string IntToMoney(int amount) {
         double money = 1.0 * amount / 100;
         return DecimalPlaceNoRounding(money, 2);
@@ -25,7 +25,7 @@ public class Tools {
         return (int)money;
     }
 
-    //Cards
+    // Cards
     public static Sprite GetSuitSprite(Card card) {
         return Resources.Load<Sprite>("Cards/" + card.SuitToString().ToLower());
     }
@@ -45,10 +45,9 @@ public class Tools {
         } else {
             return Color.black;
         }
-
     }
 
-    //Players
+    // Players
     public static void UpdatePlayerUIs(Player[] players) {
         foreach (Player p in players) {
             p.RpcUpdateUI();
@@ -60,6 +59,5 @@ public class Tools {
             if (player.Folded) { continue; }
             player.Hand = Hand.GetHighestHand(player.Cards);
         }
-
     }
 }

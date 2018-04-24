@@ -6,13 +6,13 @@ using UnityEngine.Networking;
 
 public class Controls : NetworkBehaviour {
 
-    public float sensitivity = 2f;
+    public float Sensitivity = 2f;
     [SerializeField]
     private Transform cam;
 
     ScoreboardUI scoreboard;
 
-    private Quaternion chTarget;
+    private Quaternion characterTarget;
     private Quaternion camTarget;
 
     void Start() {
@@ -28,9 +28,8 @@ public class Controls : NetworkBehaviour {
         cam.gameObject.GetComponent<Camera>().enabled = true;
 
         transform.LookAt(GameObject.FindGameObjectWithTag("Table").GetComponent<Table>().Deck);
-        chTarget = transform.rotation;
+        characterTarget = transform.rotation;
         camTarget = cam.transform.localRotation;
-
     }
 
     void Update() {
@@ -48,39 +47,36 @@ public class Controls : NetworkBehaviour {
         }
 
         CheckCamera();
-
     }
 
     private void CheckCamera() {
 
         if (Input.GetKey(KeyCode.Mouse1)) {
-            updateCamera();
+            UpdateCamera();
 
             if (Cursor.lockState != CursorLockMode.Locked) {
                 Cursor.lockState = CursorLockMode.Locked;
             }
             Cursor.visible = true;
-
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse1)) {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
-
     }
 
-    private void updateCamera() {
+    private void UpdateCamera() {
 
-        float yRot = Input.GetAxis("Mouse X") * sensitivity;
-        float xRot = Input.GetAxis("Mouse Y") * sensitivity;
+        float yRot = Input.GetAxis("Mouse X") * Sensitivity;
+        float xRot = Input.GetAxis("Mouse Y") * Sensitivity;
 
-        chTarget *= Quaternion.Euler(0f, yRot, 0f);
+        characterTarget *= Quaternion.Euler(0f, yRot, 0f);
         camTarget *= Quaternion.Euler(-xRot, 0f, 0f);
 
         camTarget = ClampRotationAroundXAxis(camTarget);
 
-        transform.rotation = chTarget;
+        transform.rotation = characterTarget;
         cam.transform.localRotation = camTarget;
         transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
     }
@@ -99,5 +95,4 @@ public class Controls : NetworkBehaviour {
 
         return q;
     }
-
 }

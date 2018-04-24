@@ -5,25 +5,27 @@ using UnityEngine.Networking;
 
 public class CardObject : NetworkBehaviour {
 
-    Collider c;
+    private Collider c;
 
-    Transform suit;
-    Transform number;
-    Card card;
-    GameObject owner;
+    private Transform suit;
+    private Transform number;
+    private Card card;
+
+    private GameObject owner;
     public GameObject Owner { get { return owner; } }
-    float smoothTime = 1;
-    bool initialized;
-    Rigidbody rb;
+    private Rigidbody rb;
 
-    Vector3 targetPosition;
-    Vector3 targetRotation;
-    Vector3 posVelocity;
-    Vector3 rotVelocity;
-    bool arrived;
-    bool kill;
+    private Vector3 targetPosition;
+    private Vector3 targetRotation;
+    private Vector3 posVelocity;
+    private Vector3 rotVelocity;
 
-    float moveSpeed;
+    private float smoothTime = 1;
+    private float moveSpeed;
+
+    private bool initialized;
+    private bool arrived;
+    private bool kill;
 
     public Card Card { get { return card; } }
 
@@ -41,7 +43,6 @@ public class CardObject : NetworkBehaviour {
         if (!isServer) { return; }
 
         CmdUpdateCard();
-
     }
 
 	[Command]
@@ -81,11 +82,8 @@ public class CardObject : NetworkBehaviour {
                 if (kill) {
                     NetworkServer.Destroy(gameObject);
                 }
-
             }
-
         }
-
     }
 
 
@@ -126,27 +124,6 @@ public class CardObject : NetworkBehaviour {
 
     public void UpdateCard() {
 
-        string suitString = "";
-
-        switch (card.Suit) {
-
-            case 1:
-            suitString = "spade";
-            break;
-            case 2:
-            suitString = "heart";
-            break;
-            case 3:
-            suitString = "diamond";
-            break;
-            case 4:
-            suitString = "club";
-            break;
-            default:
-            suitString = "";
-            break;
-        }
-
         suit.GetComponent<Renderer>().material.mainTexture = Tools.GetSuitTexture(card);
         number.GetComponent<Renderer>().material.mainTexture = Tools.GetNumberTexture(card);
 
@@ -160,7 +137,5 @@ public class CardObject : NetworkBehaviour {
 
         suit.GetComponent<Material>().color = new Color(0, 0, 0, 0);
         number.GetComponent<Material>().color = new Color(0, 0, 0, 0);
-
     }
-
 }

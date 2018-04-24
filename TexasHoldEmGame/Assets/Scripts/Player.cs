@@ -4,8 +4,21 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System;
 
-public class Player : NetworkBehaviour , IComparable{
+public class Player : NetworkBehaviour, IComparable {
 
+    private Turn turn;
+    public Turn Turn { get { return turn; } set { turn = value; } }
+
+    private Card[] cards;
+    public Card[] Cards { get { return cards; } }
+
+    bool winner;
+    public bool Winner { get { return winner; } set { winner = value; } }
+
+    [SerializeField]
+    HoldemUI ui;
+
+    // Syncvars
     [SyncVar]
     private bool ready;
     public bool Ready { get { return ready; } set { ready = value; } }
@@ -27,20 +40,8 @@ public class Player : NetworkBehaviour , IComparable{
     public int Needed { get { return needed; } set { needed = value; } }
 
     [SyncVar]
-    private double hand;
-    public double Hand { get { return hand; } set { hand = value; } }
-
-    private Turn turn;
-    public Turn Turn { get { return turn; } set { turn = value; } }
-
-    private Card[] cards;
-    public Card[] Cards { get { return cards; } }
-
-    bool winner;
-    public bool Winner { get { return winner; } set { winner = value; } }
-
-    [SerializeField]
-    HoldemUI ui;
+    private Hand hand;
+    public Hand Hand { get { return hand; } set { hand = value; } }
 
     void Start() {
         if (!isLocalPlayer) {
@@ -56,28 +57,28 @@ public class Player : NetworkBehaviour , IComparable{
         }
     }
 
-    //Game actions
+    // Game actions
     [Command]
     public void CmdFold() {
         print("Player: " + transform.name + " Folded.");
-        turn.fold = true;
+        turn.Fold = true;
         ready = true;
     }
     [Command]
     public void CmdCall() {
         print("Player: " + transform.name + " called.");
-        turn.raise = 0;
+        turn.Raise = 0;
         ready = true;
     }
     [Command]
     public void CmdRaise(int amount) {
         print("Player: " + transform.name + " raised: " + amount);
-        turn.raise = amount;
+        turn.Raise = amount;
         ready = true;
     }
 
 
-    //Server side methods
+    // Server side methods
     [Command]
     void CmdSetReady(bool ready) {
         this.ready = ready;
@@ -104,13 +105,12 @@ public class Player : NetworkBehaviour , IComparable{
         }
 
         RpcUpdateCards(card.Suit, card.Number);
-
     }
     [ClientRpc]
     public void RpcUpdateCards(int suit, int number) {
 
         if (!isLocalPlayer || isServer) { return; }
-    
+
         Card card = new Card();
         card.SetCard(suit, number);
 
@@ -124,10 +124,9 @@ public class Player : NetworkBehaviour , IComparable{
                 break;
             }
         }
-
     }
 
-    //Other
+    // Other
     public bool CanPay(int amount) {
         return money - amount >= 0;
     }
@@ -157,7 +156,6 @@ public class Player : NetworkBehaviour , IComparable{
         } else {
             ui.EnableUI(enable);
         }
-
     }
 
     [ClientRpc]
@@ -194,13 +192,10 @@ public class Player : NetworkBehaviour , IComparable{
     }
 
     public int CompareTo(object obj) {
-        Player other = (Player)obj;
-        
-        if (other.Hand - hand < 0) {
-            return -1;
-        } else if (other.Hand - hand == 0) {
-            return 0;
+        if (folded) {
+            return 1;
         }
-        return 1;
+        Player player = (Player)obj;
+        return hand.CompareTo(player.Hand);
     }
 }

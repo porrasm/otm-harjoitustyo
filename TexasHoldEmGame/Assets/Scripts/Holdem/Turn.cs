@@ -4,13 +4,13 @@
         NewTurn();
     }
 
-    Player player;
-    public bool fold;
-    public int raise;
-    public string turn;
+    private Player player;
+    public bool Fold;
+    public int Raise;
+    public string TurnString;
 
     public override string ToString() {
-        return turn;
+        return TurnString;
     }
 
     public void SetPlayer(Player p) {
@@ -18,9 +18,8 @@
     }
 
     public void NewTurn() {
-        fold = false;
-        raise = 0;
-        turn = "";
+        Fold = false;
+        Raise = 0;
+        TurnString = string.Empty;
     }
-
 }
