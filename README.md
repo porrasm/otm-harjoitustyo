@@ -6,7 +6,7 @@ Unityllä toteutettu perinteinen Texas hold 'em moninpelillä.
 
 [Kayttöohjeet](https://github.com/porrasm/otm-harjoitustyo/tree/master/dokumentaatio/kaytto-ohjeet.md)
 
-[Ohaajille](https://github.com/porrasm/otm-harjoitustyo/tree/master/ohjaajille.md)
+[Ohjaajille](https://github.com/porrasm/otm-harjoitustyo/tree/master/ohjaajille.md)
 
 [Tuntikirjanpito](https://github.com/porrasm/otm-harjoitustyo/tree/master/dokumentaatio/tuntikirjanpito.md)
 
