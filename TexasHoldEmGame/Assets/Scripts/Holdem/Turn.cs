@@ -6,7 +6,7 @@
 
     private Player player;
     public bool Fold;
-    public int Raise;
+    public int Pay;
     public string TurnString;
 
     public override string ToString() {
@@ -19,7 +19,7 @@
 
     public void NewTurn() {
         Fold = false;
-        Raise = 0;
+        Pay = 0;
         TurnString = string.Empty;
     }
 }

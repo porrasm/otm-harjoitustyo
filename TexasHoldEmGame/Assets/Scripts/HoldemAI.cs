@@ -22,8 +22,9 @@ public class HoldemAI : Player {
             return;
         }
 
-        
-
+        Invoke("ContinueTurn", 0.1f);
+    }
+    void ContinueTurn() {
         if (Turn == null) {
             Turn = new Turn();
         }
@@ -32,7 +33,8 @@ public class HoldemAI : Player {
         if (Money < Needed) {
             Money = Needed * 2;
         }
-        Turn.Raise = 0;
+        Turn.TurnString = transform.name + " calls " + Tools.IntToMoney(Needed);
+        Turn.Pay = 0;
         Ready = true;
     }
 }

@@ -129,7 +129,7 @@ public class HoldemUI : MonoBehaviour {
     }
     public void Raise() {
 
-        if (!RaiseCheck()) { return; }
+        if (!Tools.CorrectInput(raiseAmount.text)) { return; }
 
         int amount = Tools.MoneyToInt(raiseAmount.text);
         print("Raised: " + amount);
@@ -139,16 +139,5 @@ public class HoldemUI : MonoBehaviour {
         print("Folded.");
         player.CmdFold();
     }
-    public bool RaiseCheck() {
-        double a = 0.0;
-        bool parse = double.TryParse(raiseAmount.text, out a);
-
-        if (!parse) {
-
-            raiseAmount.text = "0.00";
-            return false;
-        }
-
-        return true;
-    }
+    
 }

@@ -24,6 +24,23 @@ public class Tools {
 
         return (int)money;
     }
+    public static bool CorrectInput(string money) {
+        double a = 0.0;
+        bool parse = double.TryParse(money, out a);
+
+        if (!parse) {
+
+            money = "0.00";
+            return false;
+        }
+        return true;
+    }
+
+    public static void PopUp(string text) {
+        GameObject popUp = MonoBehaviour.Instantiate(Resources.Load("PopUp") as GameObject);
+        popUp.transform.parent = GameObject.FindGameObjectWithTag("GlobalUI").transform;
+        popUp.GetComponent<PopUp>().Initialize(text);
+    }
 
     // Cards
     public static Sprite GetSuitSprite(Card card) {

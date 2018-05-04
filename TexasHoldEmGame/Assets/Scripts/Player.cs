@@ -61,19 +61,22 @@ public class Player : NetworkBehaviour, IComparable {
     [Command]
     public void CmdFold() {
         print("Player: " + transform.name + " Folded.");
+        turn.TurnString = transform.name + " folds";
         turn.Fold = true;
         ready = true;
     }
     [Command]
     public void CmdCall() {
         print("Player: " + transform.name + " called.");
-        turn.Raise = 0;
+        turn.TurnString = transform.name + " calls " + Tools.IntToMoney(needed);
+        turn.Pay = 0;
         ready = true;
     }
     [Command]
     public void CmdRaise(int amount) {
         print("Player: " + transform.name + " raised: " + amount);
-        turn.Raise = amount;
+        turn.TurnString = transform.name + " rases by " + Tools.IntToMoney(amount);
+        turn.Pay = amount;
         ready = true;
     }
 
@@ -197,5 +200,11 @@ public class Player : NetworkBehaviour, IComparable {
         }
         Player player = (Player)obj;
         return hand.CompareTo(player.Hand);
+    }
+
+    // Preset pop ups
+
+    public string PlayerStartsTurn() {
+        return transform.name + "'s turn.";
     }
 }

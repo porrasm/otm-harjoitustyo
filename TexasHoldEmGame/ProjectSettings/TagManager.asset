@@ -10,6 +10,8 @@ TagManager:
   - Card
   - Scoreboard
   - NetworkManager
+  - GlobalUI
+  - PopUp
   layers:
   - Default
   - TransparentFX
