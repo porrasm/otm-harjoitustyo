@@ -10,7 +10,7 @@ public class HoldemUI : MonoBehaviour {
     TexasHoldEm game;
 
     [SerializeField]
-    Transform cardParent;
+    Transform cardParent, panel;
 
     [SerializeField]
     Button callButton, raiseButton, foldButton;
@@ -21,7 +21,7 @@ public class HoldemUI : MonoBehaviour {
     [SerializeField]
     InputField raiseAmount;
 
-
+    
 
     void Start() {
         player = transform.root.GetComponent<Player>();
@@ -94,6 +94,9 @@ public class HoldemUI : MonoBehaviour {
         foldButton.interactable = enable;
         raiseAmount.interactable = enable;
     }
+    public void EnablePanel(bool enable) {
+        panel.gameObject.SetActive(enable);
+    }
 
     public void ResetUI() {
 
@@ -139,5 +142,27 @@ public class HoldemUI : MonoBehaviour {
         print("Folded.");
         player.CmdFold();
     }
-    
+
+
+    // Menu
+
+    [SerializeField]
+    Transform menuPanel, initPanel;
+
+    [SerializeField]
+    InputField nameField;
+
+
+    public void Ready() {
+        transform.root.GetComponent<Player>().CmdSetReady(true);
+        transform.root.GetComponent<Player>().CmdSetName(nameField.text);
+    }
+
+    public void EnableMenu(bool enable) {
+        menuPanel.gameObject.SetActive(enable);
+    }
+    public void DisableInit() {
+        initPanel.gameObject.SetActive(false);
+    }
+
 }

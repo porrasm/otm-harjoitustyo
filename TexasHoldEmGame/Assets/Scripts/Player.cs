@@ -45,15 +45,8 @@ public class Player : NetworkBehaviour, IComparable {
 
     void Start() {
         if (!isLocalPlayer) {
-            transform.GetChild(0).GetComponent<Camera>().enabled = false;
             ui.gameObject.SetActive(false);
-        }
-    }
-
-    void Update() {
-        if (!isLocalPlayer) { return; }
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            CmdSetReady(true);
+            transform.GetChild(0).GetComponent<Camera>().enabled = false;
         }
     }
 
@@ -83,10 +76,17 @@ public class Player : NetworkBehaviour, IComparable {
 
     // Server side methods
     [Command]
-    void CmdSetReady(bool ready) {
+    public void CmdSetReady(bool ready) {
         this.ready = ready;
     }
-
+    [Command]
+    public void CmdSetName(string name) {
+        RpcSetName(name);
+    }
+    [ClientRpc]
+    public void RpcSetName(string name) {
+        transform.name = name;
+    }
 
     public void ResetCards() {
         cards = new Card[7];
@@ -175,6 +175,13 @@ public class Player : NetworkBehaviour, IComparable {
         ui.UpdateUI();
         ui.EnableUI(false);
         ui.ResetUI();
+    }
+
+    [ClientRpc]
+    public void RpcGameUIStart() {
+        if (!isLocalPlayer) { return; }
+        ui.DisableInit();
+        ui.EnablePanel(true);
     }
 
     public void SetPlayerPosition(Transform position) {

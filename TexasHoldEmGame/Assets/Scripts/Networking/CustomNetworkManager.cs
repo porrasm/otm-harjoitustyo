@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class CustomNetworkManager : NetworkManager {
 
+
     public int buyIn;
 
     public void CreateMatch(string name, string password, int buyIn) {
@@ -55,5 +56,30 @@ public class CustomNetworkManager : NetworkManager {
 
     private void LoadGame() {
         SceneManager.LoadScene("Game");
+    }
+
+
+    public override void OnServerError(NetworkConnection conn, int errorCode) {
+        OnClientDisconnect(conn);
+    }
+    public override void OnServerDisconnect(NetworkConnection conn) {
+
+        print("Client disconnected, removing player");
+
+        TexasHoldEm game = GameObject.FindGameObjectWithTag("Scripts").GetComponent<TexasHoldEm>();
+        Player player = null;
+
+        foreach (Player p in game.Players) {
+            if (p.GetComponent<NetworkIdentity>().connectionToClient == conn) {
+                player = p;
+            }
+        }
+
+        player.Ready = true;
+        player.Folded = true;
+        game.RemovePlayer(player);
+    }
+    public override void OnServerConnect(NetworkConnection conn) {
+        GameObject.FindGameObjectWithTag("Scripts").GetComponent<TexasHoldEm>().UpdatePlayers();
     }
 }

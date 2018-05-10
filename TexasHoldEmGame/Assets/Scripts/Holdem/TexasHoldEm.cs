@@ -47,7 +47,6 @@ public class TexasHoldEm : NetworkBehaviour {
     private int smallBlind = 10, bigBlind = 20;
 
 
-
     void Start() {
 
         if (!isServer) { return; }
@@ -57,15 +56,12 @@ public class TexasHoldEm : NetworkBehaviour {
         dealer = 0;
         table = GameObject.FindGameObjectWithTag("Table").GetComponent<Table>();
         scoreboard = GameObject.FindGameObjectWithTag("Scoreboard").GetComponent<ScoreboardUI>();
+        Invoke("PlaceHolderStart", 3);
     }
 
     void Update() {
 
         if (!isServer) { return; }
-
-        if (Input.GetKeyDown(KeyCode.P)) {
-            PlaceHolderStart();
-        }
 
         if (!roundIsOn && roundAmount > 0 && GameIsReady) {
             StartHoldemRound();
@@ -82,7 +78,6 @@ public class TexasHoldEm : NetworkBehaviour {
 
     // Game
     public void PlaceHolderStart() {
-        UpdatePlayers();
         StartCoroutine(PlaceholderStartCoroutine());
     }
     IEnumerator PlaceholderStartCoroutine() {
@@ -93,16 +88,23 @@ public class TexasHoldEm : NetworkBehaviour {
 
         while (true) {
 
+            UpdatePlayers();
+
             bool allReady = true;
             foreach (Player player in players) {
                 if (!player.Ready) {
+                    print(player.name + " is not ready");
                     allReady = false;
                 }
             }
 
             if (allReady) {
-
+                
                 UpdatePlayers();
+
+                foreach (Player p in players) {
+                    if (!p.Ready) { continue; }
+                }
 
                 if (fillWithAI) {
                     for (int i = 0; i < 10 - players.Length; i++) {
@@ -126,6 +128,10 @@ public class TexasHoldEm : NetworkBehaviour {
             yield return new WaitForSeconds(1);
         }
 
+        foreach (Player p in players) {
+            p.RpcGameUIStart();
+        }
+
         gameIsReady = true;
         roundAmount = 30;
         roundIsOn = false;
@@ -136,6 +142,7 @@ public class TexasHoldEm : NetworkBehaviour {
         if (roundIsOn) {
             return;
         }
+
         PopUp("Starting round ");
         roundIsOn = true;
         StartCoroutine(StartHoldemRoundCoroutine());
@@ -343,10 +350,13 @@ public class TexasHoldEm : NetworkBehaviour {
 
             PlayerTurn(false);
 
-            while (!currentPlayer.Ready) {
+            while (!currentPlayer.Ready && currentPlayer != null) {
                 yield return null;
             }
-            currentPlayer.EnablePlayerTurn(false);
+
+            if (currentPlayer != null) {
+                currentPlayer.EnablePlayerTurn(false);
+            }
 
             // Analyzing turn
             AnalyzeTurn();
@@ -370,7 +380,8 @@ public class TexasHoldEm : NetworkBehaviour {
 
             PlayerTurn(true);
 
-            while (!currentPlayer.Ready) {
+            while (!currentPlayer.Ready && currentPlayer != null) {
+                print(currentPlayer);
                 yield return null;
             }
             currentPlayer.EnablePlayerTurn(false);
@@ -491,21 +502,57 @@ public class TexasHoldEm : NetworkBehaviour {
         }
     }
 
+    public void RemovePlayer(Player player) {
+
+        Player[] newPlayers = new Player[players.Length - 1];
+
+        int index = 0;
+
+        foreach (Player p in players) {
+            if (p != player) {
+                newPlayers[index] = p;
+                index++;
+            }
+        }
+
+    }
     
     // Tools
     Player PlayerByOrder(int amount) {
-        return players[(dealer + amount) % players.Length];
+
+        int index = (dealer + amount) % players.Length;
+        Player player = players[index];
+
+        while (player == null) {
+
+            index++;
+            if (index == players.Length) {
+                index = 0;
+            }
+            player = players[index];
+        }
+
+        return player;
     }
     int IndexByOrder(int amount) {
-        return (dealer + amount) % players.Length;
+
+        int index = (dealer + amount) % players.Length;
+        Player player = players[index];
+
+        while (player == null) {
+
+            index++;
+            if (index == players.Length) {
+                index = 0;
+            }
+            player = players[index];
+        }
+
+        return index;
     }
     int GetNeeded(Player player) {
         player.Needed = BiggestBet() - player.Bet;
         return player.Needed;
-    }
-
-    public void RemovePlayer(int index) {
-        throw new System.NotSupportedException("Functionality has not been implemented yet.");
     }
 
     public int BiggestBet() {
