@@ -38,7 +38,7 @@ public class Tools {
 
     public static void PopUp(string text) {
         GameObject popUp = MonoBehaviour.Instantiate(Resources.Load("PopUp") as GameObject);
-        popUp.transform.parent = GameObject.FindGameObjectWithTag("GlobalUI").transform;
+        popUp.transform.SetParent(GameObject.FindGameObjectWithTag("GlobalUI").transform);
         popUp.GetComponent<PopUp>().Initialize(text);
     }
 

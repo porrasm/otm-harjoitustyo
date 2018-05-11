@@ -7,7 +7,7 @@ public class PopUp : MonoBehaviour {
 
     private RectTransform rt;
 
-    private float progress = 10;
+    private float progress = 15;
 
     [SerializeField]
     private Text textObjext;
@@ -60,6 +60,6 @@ public class PopUp : MonoBehaviour {
         rt.anchoredPosition = startPos;
     }
     public void PushUp() {
-        rt.anchoredPosition = rt.anchoredPosition + new Vector2(0, 25);
+        rt.anchoredPosition = rt.anchoredPosition + new Vector2(0, 35);
     }
 }

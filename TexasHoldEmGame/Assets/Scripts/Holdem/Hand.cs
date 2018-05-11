@@ -3,7 +3,7 @@ using System;
 
 public class Hand : IComparable {
 
-    private int value;
+    private int value = 0;
     public int Value { get { return value; } }
     public void SetValue(int value) {
         this.value = value;
@@ -20,7 +20,6 @@ public class Hand : IComparable {
     public Hand() {
         kickerValues = new int[5];
     }
-
     
     public bool Tie(Hand other) {
 
@@ -62,7 +61,24 @@ public class Hand : IComparable {
 
         return 0;
     }
+    public override bool Equals(object obj) {
+        Hand other = (Hand)obj;
 
+        if (other == null) {
+            return false;
+        }
+
+        if (value != other.value) {
+            return false;
+        }
+
+        for (int i = 0; i < 5; i++) {
+            if (kickerValues[i] != other.kickerValues[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     // Static methods
     public static Hand GetHighestHand(Card[] playerCards) {

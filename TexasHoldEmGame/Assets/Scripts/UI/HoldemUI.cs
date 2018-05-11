@@ -127,19 +127,20 @@ public class HoldemUI : MonoBehaviour {
 
     // Actions
     public void CallCheck() {
-        print("Checked.");
         player.CmdCall();
+        
     }
     public void Raise() {
 
         if (!Tools.CorrectInput(raiseAmount.text)) { return; }
 
         int amount = Tools.MoneyToInt(raiseAmount.text);
-        print("Raised: " + amount);
+        if (amount > player.Money ) {
+            amount = player.Money;
+        }
         player.CmdRaise(amount);
     }
     public void Fold() {
-        print("Folded.");
         player.CmdFold();
     }
 

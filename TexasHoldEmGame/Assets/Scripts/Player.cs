@@ -12,31 +12,26 @@ public class Player : NetworkBehaviour, IComparable {
     private Card[] cards;
     public Card[] Cards { get { return cards; } }
 
-    bool winner;
+    private bool winner;
     public bool Winner { get { return winner; } set { winner = value; } }
 
     [SerializeField]
     HoldemUI ui;
 
+    [SerializeField]
+    private TextMesh textMesh;
+
     // Syncvars
     [SyncVar]
-    private bool ready;
+    private bool ready, folded, lost;
     public bool Ready { get { return ready; } set { ready = value; } }
-
-    [SyncVar]
-    private bool folded;
     public bool Folded { get { return folded; } set { folded = value; } }
+    public bool Lost { get { return lost; } set { lost = value; } }
 
     [SyncVar]
-    private int money;
+    private int money, bet, needed;
     public int Money { get { return money; } set { money = value; } }
-
-    [SyncVar]
-    private int bet;
     public int Bet { get { return bet; } set { bet = value; } }
-
-    [SyncVar]
-    private int needed;
     public int Needed { get { return needed; } set { needed = value; } }
 
     [SyncVar]
@@ -46,29 +41,34 @@ public class Player : NetworkBehaviour, IComparable {
     void Start() {
         if (!isLocalPlayer) {
             ui.gameObject.SetActive(false);
-            transform.GetChild(0).GetComponent<Camera>().enabled = false;
         }
     }
 
     // Game actions
     [Command]
     public void CmdFold() {
-        print("Player: " + transform.name + " Folded.");
         turn.TurnString = transform.name + " folds";
         turn.Fold = true;
         ready = true;
     }
     [Command]
+    public void CmdCheck() {
+        turn.TurnString = transform.name + " checks. ";
+        turn.Pay = 0;
+        ready = true;
+    }
+    [Command]
     public void CmdCall() {
-        print("Player: " + transform.name + " called.");
+        if (needed == 0) { CmdCheck(); return; }
         turn.TurnString = transform.name + " calls " + Tools.IntToMoney(needed);
         turn.Pay = 0;
         ready = true;
     }
     [Command]
     public void CmdRaise(int amount) {
-        print("Player: " + transform.name + " raised: " + amount);
-        turn.TurnString = transform.name + " rases by " + Tools.IntToMoney(amount);
+        if (amount == 0) { CmdCall(); return; }
+        int fixedRaise = amount - needed;
+        turn.TurnString = transform.name + " raises by " + Tools.IntToMoney(fixedRaise);
         turn.Pay = amount;
         ready = true;
     }
@@ -86,6 +86,7 @@ public class Player : NetworkBehaviour, IComparable {
     [ClientRpc]
     public void RpcSetName(string name) {
         transform.name = name;
+        textMesh.text = name;
     }
 
     public void ResetCards() {

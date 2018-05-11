@@ -36,6 +36,7 @@ public class CardObject : NetworkBehaviour {
         targetPosition = Vector3.zero;
         rb = GetComponent<Rigidbody>();
         c = GetComponent<Collider>();
+        rb.isKinematic = true;
     }
 
     void Start() {
@@ -53,7 +54,6 @@ public class CardObject : NetworkBehaviour {
 
     void Update() {
 
-
         if (!isServer) {
 
             if (!initialized) {
@@ -66,8 +66,6 @@ public class CardObject : NetworkBehaviour {
         if (!arrived) {
 
             if (c.enabled || !rb.isKinematic) {
-                c.enabled = false;
-                rb.isKinematic = true;
             }
 
             transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref posVelocity, smoothTime);
@@ -76,8 +74,6 @@ public class CardObject : NetworkBehaviour {
                 transform.position = targetPosition;
                 transform.eulerAngles = targetRotation;
                 arrived = true;
-                rb.isKinematic = false;
-                c.enabled = true;
 
                 if (kill) {
                     NetworkServer.Destroy(gameObject);

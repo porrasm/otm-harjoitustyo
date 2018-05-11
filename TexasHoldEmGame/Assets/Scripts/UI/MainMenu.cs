@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +13,7 @@ public class MainMenu : MonoBehaviour {
     private Transform currentMenu;
 
     [SerializeField]
-    private Transform createMenu, joinMenu, settingsMenu;
+    private Transform createMenu, joinMenu;
 
     /*
     [SerializeField]
@@ -21,11 +22,18 @@ public class MainMenu : MonoBehaviour {
     */
 
     [SerializeField]
-    private InputField createName, createPassword, createBuyIn, joinName, joinPassword;
+    private InputField createPassword, createBuyIn, joinPassword;
 
     void Start() {
         currentMenu = MainMenuPanel;
         currentMenu.gameObject.SetActive(true);
+    }
+
+    private CustomNetworkManager GetNetworkManager() {
+        if (networkManager == null) {
+            networkManager = GameObject.Find("NetworkManager").GetComponent<CustomNetworkManager>();
+        }
+        return networkManager;
     }
 
     // Main
@@ -46,41 +54,44 @@ public class MainMenu : MonoBehaviour {
         currentMenu = joinMenu;
         currentMenu.gameObject.SetActive(true);
     }
-    public void ActivateSettingsMenu() {
-        currentMenu.gameObject.SetActive(false);
-        currentMenu = settingsMenu;
-        currentMenu.gameObject.SetActive(true);
+    public void Quit() {
+        Application.Quit();
     }
 
     // Create
 
     public void CreateMatch() {
 
-        string serverName = createName.text;
-        bool usePassword = true;
+        string serverName = createPassword.text;
+        int serverBuyIn;
 
-        if (serverName.Equals("")) {
-            return;
-        }
-
-        string serverPassword = createPassword.text;
-
-        if (serverPassword.Equals("")) {
-            usePassword = false;
+        if (serverName.Equals(string.Empty)) {
+            serverName = string.Empty + Random.value;
+        } else {
+            serverName = "HIDDEN: " + createPassword.text;
         }
         
-        int serverBuyIn = 20;
-
-        if (Tools.CorrectInput(createBuyIn.text)) {
+        if (createBuyIn.text.Equals(string.Empty)) {
+            serverBuyIn = 2000;
+        } else if (!Tools.CorrectInput(createBuyIn.text)) {
+            return;
+        } else {
             serverBuyIn = Tools.MoneyToInt(createBuyIn.text);
-        }
+            if (serverBuyIn < 200) {
+                return;
+            }
+        }    
 
-        networkManager.CreateMatch(serverName, serverPassword, serverBuyIn);
+        GetNetworkManager().CreateMatch(serverName, serverBuyIn);
     }
 
     // Join
 
     public void QuickJoin() {
-        networkManager.QuickJoin();
+        GetNetworkManager().QuickJoin();
+    }
+    public void JoinPrivate() {
+        string password = "HIDDEN: " + joinPassword.text;
+        GetNetworkManager().PrivateJoin(password);
     }
 }
