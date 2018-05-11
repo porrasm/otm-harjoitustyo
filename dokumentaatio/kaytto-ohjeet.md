@@ -69,4 +69,4 @@ Peli on tällä hetkellä ainoastaan moninpeli, eli et voi pelata sitä yksin. V
 
 ## BUGEJA
 
-- Välillä tasapelitilanteessa peli laskee väärän voittajan
+- Välillä peliaulassa liittynyt pelaaja ei näy muita pelaajia. 
