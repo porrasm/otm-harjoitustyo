@@ -33,7 +33,7 @@ public class TexasHoldEm : NetworkBehaviour {
     private string gameState;
 
     [SyncVar]
-    public int popUps = 0;
+    public int PopUps = 0;
 
     // Settings
 
@@ -91,6 +91,7 @@ public class TexasHoldEm : NetworkBehaviour {
     }
 
     // Game
+
     /// <summary>
     /// Starts the game. Must be called on the server.
     /// </summary>
@@ -104,9 +105,9 @@ public class TexasHoldEm : NetworkBehaviour {
 
         gameState = "Game starting...";
         PopUp(gameState);
-        buyIn = GameObject.Find("NetworkManager").GetComponent<CustomNetworkManager>().buyIn;
+        buyIn = GameObject.Find("NetworkManager").GetComponent<CustomNetworkManager>().BuyIn;
 
-        while(!canContinue) {
+        while (!canContinue) {
             yield return new WaitForSeconds(0.5f);
             RpcGivePlayerListToClients();
         }
@@ -504,7 +505,6 @@ public class TexasHoldEm : NetworkBehaviour {
             tableValue -= win;
             current.Money += win;
             winners--;
-
         }
     }
 
@@ -633,8 +633,8 @@ public class TexasHoldEm : NetworkBehaviour {
 
     private void PopUp(string text) {
         print("Pop Up: " + text);
-        RpcPopUpAllPlayers(text, popUps);
-        popUps++;
+        RpcPopUpAllPlayers(text, PopUps);
+        PopUps++;
     }
     [ClientRpc]
     private void RpcPopUpAllPlayers(string text, int index) {

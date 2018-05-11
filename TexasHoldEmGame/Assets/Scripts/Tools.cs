@@ -68,7 +68,7 @@ public class Tools {
         GameObject popUp = MonoBehaviour.Instantiate(Resources.Load("PopUp") as GameObject);
         popUp.transform.SetParent(GameObject.FindGameObjectWithTag("GlobalUI").transform);
         popUp.GetComponent<PopUp>().Initialize(text);
-        popUp.GetComponent<PopUp>().index = index;
+        popUp.GetComponent<PopUp>().Index = index;
     }
 
     // Cards

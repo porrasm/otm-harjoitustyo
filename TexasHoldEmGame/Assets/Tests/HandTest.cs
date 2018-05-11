@@ -46,7 +46,6 @@ public class HandTest {
             Assert.AreEqual(expectedValue, highest.Value);
             Assert.AreEqual(big, highest.KickerValues[0]);
             Assert.AreEqual(small, highest.KickerValues[1]);
-
         }
 
         yield return null;
@@ -254,7 +253,6 @@ public class HandTest {
                 index++;
                 j -= 2;
             }
-
         }
 
         for (int i = 1; i < 7; i++) {
@@ -278,7 +276,6 @@ public class HandTest {
                 index++;
                 j -= 2;
             }
-
         }
         yield return null;
     }

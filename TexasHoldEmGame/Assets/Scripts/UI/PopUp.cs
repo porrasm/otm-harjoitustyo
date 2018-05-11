@@ -22,7 +22,7 @@ public class PopUp : MonoBehaviour {
     [SerializeField]
     private Vector2 startPos = new Vector3(110, 0);
 
-    public int index;
+    public int Index;
 
     void Start() {
         rt = GetComponent<RectTransform>();
@@ -60,7 +60,7 @@ public class PopUp : MonoBehaviour {
     }
     
     private void UpdatePosition() {
-        int difference = game.popUps - index;
+        int difference = game.PopUps - Index;
         int height = difference * 35;
         rt.anchoredPosition = new Vector2(startPos.x, startPos.y + height);
     }

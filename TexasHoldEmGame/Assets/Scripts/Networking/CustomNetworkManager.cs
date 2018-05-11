@@ -11,7 +11,7 @@ public class CustomNetworkManager : NetworkManager {
 
     private string password;
     private MatchInfo currentMatch;
-    public int buyIn;
+    public int BuyIn;
 
     /// <summary>
     /// Creates a match.
@@ -24,10 +24,10 @@ public class CustomNetworkManager : NetworkManager {
 
         singleton.StopMatchMaker();
 
-        this.buyIn = buyIn;
+        this.BuyIn = buyIn;
 
         singleton.StartMatchMaker();
-        singleton.matchMaker.CreateMatch(name, 10, true, "", "", "", 0, 0, OnMatchCreate);
+        singleton.matchMaker.CreateMatch(name, 10, true, string.Empty, string.Empty, string.Empty, 0, 0, OnMatchCreate);
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class CustomNetworkManager : NetworkManager {
     public void QuickJoin() {
         singleton.StopMatchMaker();
         singleton.StartMatchMaker();
-        singleton.matchMaker.ListMatches(0, 10, "", true, 0, 0, QuickJoinCallback);
+        singleton.matchMaker.ListMatches(0, 10, string.Empty, true, 0, 0, QuickJoinCallback);
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ public class CustomNetworkManager : NetworkManager {
 
         singleton.StopMatchMaker();
         singleton.StartMatchMaker();
-        singleton.matchMaker.ListMatches(0, 10, "", true, 0, 0, PrivateJoinCallback);
+        singleton.matchMaker.ListMatches(0, 10, string.Empty, true, 0, 0, PrivateJoinCallback);
     }
 
     private void QuickJoinCallback(bool success, string extendedInfo, List<MatchInfoSnapshot> matches) {
@@ -81,7 +81,7 @@ public class CustomNetworkManager : NetworkManager {
     }
     private void JoinMatch(MatchInfoSnapshot match, string password) {
         LoadGame();
-        singleton.matchMaker.JoinMatch(match.networkId, password, "", "", 0, 0, OnMatchJoined);
+        singleton.matchMaker.JoinMatch(match.networkId, password, string.Empty, string.Empty, 0, 0, OnMatchJoined);
     }
 
     private void LoadGame() {

@@ -150,7 +150,6 @@ public class HoldemUI : MonoBehaviour {
     /// </summary>
     public void CallCheck() {
         player.CmdCall();
-        
     }
 
     /// <summary>
@@ -161,7 +160,7 @@ public class HoldemUI : MonoBehaviour {
         if (!Tools.CorrectInput(raiseAmount.text)) { return; }
 
         int amount = Tools.MoneyToInt(raiseAmount.text);
-        if (amount > player.Money ) {
+        if (amount > player.Money) {
             amount = player.Money;
         }
         player.CmdRaise(amount);
@@ -209,7 +208,7 @@ public class HoldemUI : MonoBehaviour {
     }
 
     /// <summary>
-    ///Enables or disables the menu for this player.
+    /// Enables or disables the menu for this player.
     /// </summary>
     /// <param name="enable">Enable</param>
     public void EnableMenu(bool enable) {
@@ -262,6 +261,5 @@ public class HoldemUI : MonoBehaviour {
                 startButton.interactable = false;
             }
         }
-
     }
 }

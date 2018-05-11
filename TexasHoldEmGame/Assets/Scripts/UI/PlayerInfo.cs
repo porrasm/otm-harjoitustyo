@@ -5,7 +5,8 @@ using UnityEngine;
 public class PlayerInfo : MonoBehaviour {
     private float updateInterval = 1;
     private float currentTime;
-	void Update () {
+
+	void Update() {
         currentTime -= Time.deltaTime;
         transform.eulerAngles = new Vector3(90, 0, 0);
         if (currentTime < 0) {

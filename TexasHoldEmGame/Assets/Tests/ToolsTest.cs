@@ -11,7 +11,7 @@ public class ToolsTest {
     [UnityTest]
     public IEnumerator ToolsDoesNotAllowIncorrectInput() {
 
-        Assert.IsFalse(Tools.CorrectInput(""));
+        Assert.IsFalse(Tools.CorrectInput(string.Empty));
         Assert.IsFalse(Tools.CorrectInput("test"));
         Assert.IsFalse(Tools.CorrectInput("-123"));
         Assert.IsFalse(Tools.CorrectInput("1.2."));
@@ -57,5 +57,4 @@ public class ToolsTest {
 
         yield return null;
     }
-
 }
