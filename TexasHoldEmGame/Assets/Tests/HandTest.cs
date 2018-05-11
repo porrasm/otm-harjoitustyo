@@ -533,4 +533,43 @@ public class HandTest {
         yield return null;
     }
 
+    [UnityTest]
+    public IEnumerator L_CompareToTo() {
+
+        Card[] playerAcards = new Card[5];
+        playerAcards[0] = new Card(1, 2);
+        playerAcards[1] = new Card(1, 3);
+        playerAcards[2] = new Card(1, 4);
+        playerAcards[3] = new Card(1, 2);
+        playerAcards[4] = new Card(1, 3);
+
+        Hand playerA = Hand.GetHighestHand(playerAcards);
+
+        Card[] playerBcards = new Card[5];
+        playerBcards[0] = new Card(1, 3);
+        playerBcards[1] = new Card(2, 3);
+        playerBcards[2] = new Card(3, 3);
+        playerBcards[3] = new Card(4, 2);
+        playerBcards[4] = new Card(1, 2);
+
+        Hand playerB = Hand.GetHighestHand(playerBcards);
+
+        Card[] playerCcards = new Card[5];
+        playerCcards[0] = new Card(2, 2);
+        playerCcards[1] = new Card(2, 3);
+        playerCcards[2] = new Card(2, 4);
+        playerCcards[3] = new Card(2, 2);
+        playerCcards[4] = new Card(2, 3);
+
+        Hand playerC = Hand.GetHighestHand(playerCcards);
+
+        Assert.AreEqual(1, playerA.CompareTo(playerB));
+        Assert.AreEqual(-1, playerB.CompareTo(playerA));
+        Assert.AreEqual(0, playerA.CompareTo(playerA));
+        Assert.IsTrue(playerA.Equals(playerC));
+
+        yield return null;
+    }
+
+
 }
