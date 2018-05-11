@@ -1,5 +1,3 @@
-https://imgur.com/a/lPJ1I
-
 # Arkkitehtuurikuvaus
 
 ## Rakenne
