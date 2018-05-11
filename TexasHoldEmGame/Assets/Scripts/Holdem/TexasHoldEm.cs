@@ -423,7 +423,7 @@ public class TexasHoldEm : NetworkBehaviour {
 
         int properPlayers = 0;
         foreach (Player p in players) {
-            if (!p.Lost && p.Money > 0) {
+            if (!p.Lost && p.Money > 0 && !p.Folded) {
                 properPlayers++;
             }
         }

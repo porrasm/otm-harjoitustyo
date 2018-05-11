@@ -229,6 +229,7 @@ public class HoldemUI : MonoBehaviour {
     public void StartGame() {
         game.CanContinue = true;
         CancelInvoke();
+        GameObject.Find("NetworkManager").GetComponent<CustomNetworkManager>().MakePrivate();
     }
 
     void UpdatePlayers() {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -9,6 +10,7 @@ using UnityEngine.SceneManagement;
 public class CustomNetworkManager : NetworkManager {
 
     private string password;
+    private MatchInfo currentMatch;
     public int buyIn;
 
     /// <summary>
@@ -86,6 +88,16 @@ public class CustomNetworkManager : NetworkManager {
         SceneManager.LoadScene("Game");
     }
 
+    /// <summary>
+    /// Makes this server hidden from the public. This stops clients from joining when the game has started.
+    /// </summary>
+    public void MakePrivate() {
+        singleton.matchMaker.SetMatchAttributes(currentMatch.networkId, false, 0, OnMatchCreate);
+    }
+
+    private void OnMatchCreate(bool success, string extendedInfo) {
+    }
+
     // Class overrides
     public override void OnServerError(NetworkConnection conn, int errorCode) {
         SceneManager.LoadScene(0);
@@ -112,6 +124,10 @@ public class CustomNetworkManager : NetworkManager {
     }
     public override void OnServerConnect(NetworkConnection conn) {
         GameObject.FindGameObjectWithTag("Scripts").GetComponent<TexasHoldEm>().UpdatePlayers();
+    }
+    public override void OnMatchCreate(bool success, string extendedInfo, MatchInfo matchInfo) {
+        currentMatch = matchInfo;
+        base.OnMatchCreate(success, extendedInfo, matchInfo);
     }
 
     public void CloseServer() {
