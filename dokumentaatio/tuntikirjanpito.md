@@ -13,4 +13,5 @@
 | 24.4 | 3 | Hand evaluatorin edistäminen, yleistä siistintää, stylecopin käyttöönotto sekä stylecop virheiden korjaus |
 | 4.5 | 3 | Main Menu UI, pop up viestit peliin |
 | 10.5 | 5 | Korjailua, viimeistelyä, voitonjako etc.  |
-| Yhteensä | 38.5 | | |
+| 11.5 | 8.5 | Korjailua, viimeistelyä, testejä, muutoksia etc.  |
+| Yhteensä | 42 | | |
