@@ -12,4 +12,4 @@ https://imgur.com/a/lPJ1I
 
 Luokkakaavio
 
-<img src="https://imgur.com/a/lPJ1I" width="400">
+<img src="kuvat/luokkakaavio.jpg" width="400">
