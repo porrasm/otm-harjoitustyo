@@ -1,53 +1,62 @@
 ## Pelin lataus
 
 ### Windows
-Pelin viimesimmän buildatun version Windowsille tai MACille voi ladata tästä:
-[holdem.17.04.18.zip](http://www.mediafire.com/file/p30xsl670k13gso/holdem.17.04.18.zip)
+Pelin viimesimmän buildatun version Windowsille tai MACille voi ladata kohdasta 'Releases':
+[Releases](https://github.com/porrasm/otm-harjoitustyo/releases)
 
 HUOM: Jotkin viruksentorjunta ohjelmistot saattavat varoittaa ohjelmasta. Myös esim VirusTotal.com varoittaa ohjelmasta. Kyseessä ei ole virus vaan todennäköisesti false positive sillä sama ongelma esiintyy useilla eri projekteilla ja useilla tietokoneilla Unity pelien Windows versioissa.
 
-## Pelin Aloitus:
+## Main Menu
 
-- Koska pelissä ei ole vielä graafista käyttöliittymää, pelin aloitus tapahtuu suurilta osin näppäimillä.
-- Jos haluat pelata peliä yksin, paina 'H' tai klikkaa vasemmasta yläkulmasta 'LAN Host'.
-- Jos haluat pelata peli netissä, klikkaa 'Enable Match Maker' 
-- Paina P, kun kaikki pelaajat ovat liittyneet. Tämä alustaa pelin.
-- Paina SPACE. Tämä asettaa luokan Player.Ready = true
-- Peli toimii tämän jälkeen automaattisesti.
+Päävalikko on hyvin yksinkertainen ja siinä on 3 nappia. Host Match, Join Match ja Quit.
+
+- Host Match avaa pelin luomis valikon
+- Join Match avaa peliin liittymis valikon
+- Quit sulkee pelin
+
+### Pelin luominen
+
+- Paina ensiksi päävalikosta Host Match.
+- Sinulla on 2 asetusta. Voit asettaa pelille salasanan ja voit asettaa pelin buy inin eli rahamäärän joka jaetaan alussa kaikille.
+- Voit jättää kentät tyhjiksi tai voit halutessasi muuttaa arvoja.
+- Paina Create Match
+
+### Peliin liittyminen
+
+- Paina ensiksi päävalikosta Join Match.
+- Voit joko liittyä peliin salasanan avulla. Kirjoita salasana kenttään ja paina Join Private Match
+- Vaihtoehtoisesti voit myös painaa Quick Join joka liittyy automaattisesti avoimeen peliin.
 
 ## Pelin toiminnallisuus
 
-[Texas Hold 'em](https://www.pokerlistings.com/poker-rules-texas-holdem)
+### Pelin aloitus
 
-Pelin vasemmassa alareunassa on käyttöliittymä, jossa on napit Call tai Check, Raise ja Fold.
-Kirjoita Raise napin oikealla puolella olevaan tekstisyötteeseen korotettava summa desimaalilukuna ja paina sitten Raise.
+Kun olet joko luonut pelin tai liittynyt peliin, sinut siirretään peliaulaan. Peliaulassa näet kaikki muut pelaajat ja heidän nimensä. Kirjoita nimesi nimikenttään ja paina Ready, kun olet valmis.
 
-### Muu toiminnallisuus
+Kun pelaajia on vähintään 2 ja kun kaikki pelaajat ovat valmiita, pelin hostille avautuu nappi 'Start Game'. HUOM: Vain pelin host voi aloittaa pelin ja vasta silloin kuin kaikki pelaajat ovat valmiita.
 
-Jos pidät pohjassa hiiren oikeaa näppäintä, voit liikuttaa kameraa.
-Jos klikkaat pelikorttia, voit raahata sitä. Scrollaaminen tuo korttia lähemmän tai kauemmas. WASD avulla voit kääntää korttia.
+### Pelaaminen
 
+[Texas Hold 'em säännöt](https://www.pokerlistings.com/poker-rules-texas-holdem)
 
-## Multiplayer
+Pelin pelaaminen tapahatuu vasemmassa alareunassa olevan käyttöliittymän avulla.
 
-Käyttöliittymä menee päällekkäin, mutta nappeja voi painaa.
+- Käyttöliittymän vihreän napin avulla voit joko Checkata, Callata tai mennä All In jos rahat loppuvat kesken.
+- Käyttöliittymän keltainen nappi on Raise nappi. Napin oikealla puolella on tekstisyöte johon voit kirjoittaa korotuksesi määrän muodossa 'sataset.sentit'
+- Kääyttöliittymän punainen nappi on Fold nappi ja sitä painamalla foldaat kierroksen.
 
-Hostaaminen:
+### Käytöliittymän muut tiedot
+Käyttöliittymässä on useita laatikoita, joiden merkitys on selitetty alhaalla.
 
-- Aloita peli, mutta älä paina 'H' tai klikkaa 'LAN Host'.
-- Klikkaa 'Enable Match Maker'
-- Paina 'Create Internet Match'. Voit myös asettaa serverin nimen samalla.
-- Odota kunnes kaikki pelaajat ovat liittyneet ja paina P ja sitten SPACE.
+- Call napin oikealla puolella oleva laatikko kertoo kuinka paljon sinun pitää callata.
+- Bet laatikko kertoo sinun kokonaispanoksesi kyseisellä kierroksella.
+- Money laatikko näyttää kuinka paljon sinulla on rahaa jäljellä.
+- Table laatikko näyttää kuinka paljon rahaa pöydässä on sillä hetkellä.
+- Ylin leveä tekstilaatikko kertoo mitä sinulla on kädessä. Siinä voisi lukea esimerkiksi 'One Pair' tai 'Full House' jos olet oikein onnekas.
 
-Liittyminen:
+Tämän lisäksi pöydän ympärillä on valkoiset laatikot joiden sisällä on pelaajien nimet, sekä pelaajien rahamäärät.
 
-- Aloita peli, mutta älä paina 'H' tai klikkaa 'LAN Host'.
-- Klikkaa 'Enable Match Maker'
-- Paina 'Join Internet Match' ja sitten 'Join Match (serverin nimi)'.
-- Paina SPACE.
 
 ## BUGEJA
 
-- pelin aloitus käyttöliittymä on buginen
-- peli hyväksyy negatiivisen panostuksen
-- peliin liittyvä pelaaja, eli kaikki muut paitsi host, eivät näe kortteja.
+- Välillä tasapelitilanteessa peli laskee väärän voittajan
