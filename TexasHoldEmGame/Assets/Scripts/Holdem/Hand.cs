@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 public class Hand : IComparable {
 
@@ -342,12 +343,12 @@ public class Hand : IComparable {
 
         int index = 1;
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
 
             if (i >= 3) {
                 hand.KickerValues[index] = cards[i].Number;
                 index++;
-                break;
+                continue;
             }
 
             if (cards[i].Number == cards[i + 1].Number && cards[i].Number == cards[i + 2].Number) {
@@ -368,10 +369,10 @@ public class Hand : IComparable {
 
         int index = 0;
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
 
             if (i == 4) {
-                hand.KickerValues[index] = cards[i].Number;
+                hand.KickerValues[2] = cards[i].Number;
                 break;
             }
 
@@ -405,6 +406,7 @@ public class Hand : IComparable {
                 i++;
             } else {
                 hand.KickerValues[index] = cards[i].Number;
+                index++;
             }
         }
 

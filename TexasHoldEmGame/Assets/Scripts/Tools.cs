@@ -47,11 +47,16 @@ public class Tools {
         double a = 0.0;
         bool parse = double.TryParse(money, out a);
 
+        if (money.Contains("-")) {
+            return false;
+        }
+
         if (!parse) {
 
             money = "0.00";
             return false;
         }
+
         return true;
     }
 
