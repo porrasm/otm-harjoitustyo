@@ -14,6 +14,7 @@ On huomattavasti helpompaa ymmärtää mitä koodissa tapahtuu jos tunnet näide
 Unity alustaa kaikki muuttujat, joille on asetettu tämä headeri. Nämä eivät suinkaan siis ole null vaan niiden arvo on määritelty ennalta Unityn editorissa.
 
 Esimerkkinä toimii HoldemUI luokka, joka on täynnä tällaisia muuttujia.
+
 <img src="kuvat/unityInspector.jpg" width="200">
 
 #### Muuttujan header [SyncVar]
