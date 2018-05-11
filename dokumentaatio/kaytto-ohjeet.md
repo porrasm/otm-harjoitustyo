@@ -1,11 +1,13 @@
 ## Pelin lataus
 
-### Windows
+### Windows ja MAC
 Pelin viimesimmän buildatun version Windowsille tai MACille voi ladata kohdasta 'Releases':
 [Releases](https://github.com/porrasm/otm-harjoitustyo/releases)
 
 HUOM: Jotkin viruksentorjunta ohjelmistot saattavat varoittaa ohjelmasta. Myös esim VirusTotal.com varoittaa ohjelmasta. Kyseessä ei ole virus vaan todennäköisesti false positive sillä sama ongelma esiintyy useilla eri projekteilla ja useilla tietokoneilla Unity pelien Windows versioissa.
 
+### Linux
+Linuxille ei ole vielä versiota. Jos jää aikaa niin ehdin asentaa Linux Build kitin Unityyn ja voin compilata pelin myös Linuxille.
 
 ## Main Menu
 
