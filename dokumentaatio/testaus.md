@@ -1,5 +1,5 @@
 ## Multiplayer ja testit
-Koska peli on ainoastaan online moninpeli, tuli testauksen kanssa ongelmia ja se on jäänyt kriittisen vähiin. En ole löytänyt tapaa kuinka testata online toiminnallisuuksia, muuten kuin manuaalisesti. Myöskään Unityssä ei ole sisään rakennettuja tapoja, joilla multiplayeriä voisi testata automaattisesti.
+Koska peli on ainoastaan online moninpeli, tuli testauksen kanssa ongelmia ja se on jäänyt kriittisen vähiin. En ole löytänyt tapaa kuinka testata online toiminnallisuuksia, muuten kuin manuaalisesti. Myöskään Unityssä ei ole sisään rakennettuja tapoja, joilla multiplayeriä voisi testata automaattisesti. Jos olisin tajunnut tämän aikasemmin en olisi missään nimessä tehnyt Unity peliä, tai ainakaan moninpeliä tukevaa sovellusta.
 
 Tämän takia esimerkiksi pääpelilogiikalle ja serverin aloittamiselle/liittymiselle ei ole omia testejä.
 
@@ -14,7 +14,7 @@ Korttipakkaa testataan DeckTest.cs luokalla. Tämä testaa onko pakassa aluksi k
 
 Tools luokka sisältää useita laajasti projektissa käytettyjä metodeita, kuten käyttäjän syöttee muuttaminen rahamääräksi ja rahamäärän muuttaminen stringiksi. Näitä testaa ToolsTest.cs.
 
-### Manuaaliset testi multiplayeriin
+### Manuaaliset testit multiplayeriin
 
 Näitä seuraavia asioita olen testannut multiplayerissa maanuaalisesti:
 
@@ -27,7 +27,7 @@ Näitä seuraavia asioita olen testannut multiplayerissa maanuaalisesti:
 - Pelaaja saa oikeen määrän rahaa pelin aluksi
 - Pelaaja ei voi panostaa enemmän kuin hänellä on rahaa
 - Pelaaja ei voi pelata kierroksella foldauksen jälkeen
-- Voiton jako tapahtuu oikein
+- Voiton jako tapahtuu oikein, riippumatta siitä onko kyseessä tasapeli tilanne
 - Pelaaja postetaan pelistä jos hänellä ei ole rahaa
 - Kaikki UI elementit paitsi scoreboard (jos on tyhjiä pelaajia) päivittyy oikein
 - Peli päättyy oikein ja pelaajat palautetaa päävalikkoon ilman, että peli kaatuu
