@@ -8,6 +8,8 @@ Unityllä toteutettu perinteinen Texas hold 'em moninpelillä.
 
 [Arkkitehtuuri](https://github.com/porrasm/otm-harjoitustyo/tree/master/dokumentaatio/arkkitehtuuri.md)
 
+[Testaus](https://github.com/porrasm/otm-harjoitustyo/tree/master/dokumentaatio/testaus.md)
+
 [Ohjaajille](https://github.com/porrasm/otm-harjoitustyo/tree/master/ohjaajille.md)
 
 [Tuntikirjanpito](https://github.com/porrasm/otm-harjoitustyo/tree/master/dokumentaatio/tuntikirjanpito.md)
