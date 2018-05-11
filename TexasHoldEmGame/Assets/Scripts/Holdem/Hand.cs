@@ -191,7 +191,7 @@ public class Hand : IComparable {
     }
 
     // Booleans
-    static bool RoyalFlush(Card[] cards, bool straight, bool flush) {
+    public static bool RoyalFlush(Card[] cards, bool straight, bool flush) {
 
         if (cards[0].Number != 14) {
             return false;
@@ -199,16 +199,16 @@ public class Hand : IComparable {
 
         return straight && flush;
     }
-    static bool StraightFlush(bool straight, bool flush) {
+    public static bool StraightFlush(bool straight, bool flush) {
         return straight && flush;
     }
-    static bool FourOfAKind(Card[] cards, int[] amounts) {
+    public static bool FourOfAKind(Card[] cards, int[] amounts) {
         foreach (int i in amounts) {
-            if (i == 4) { return true; }
+            if (i >= 4) { return true; }
         }
         return false;
     }
-    static bool FullHouse(Card[] cards, int[] amounts) {
+    public static bool FullHouse(Card[] cards, int[] amounts) {
 
         bool three = false;
         bool two = false;
@@ -219,7 +219,7 @@ public class Hand : IComparable {
         }
         return two && three;
     }
-    static bool Flush(Card[] cards, int[] suits) {
+    public static bool Flush(Card[] cards, int[] suits) {
 
         foreach (int i in suits) {
             if (i == 5) { return true; }
@@ -227,7 +227,7 @@ public class Hand : IComparable {
         }
         return false;
     }
-    static bool Straight(Card[] cards, int[] amounts) {
+    public static bool Straight(Card[] cards, int[] amounts) {
 
         for (int i = -1; i < 9; i++) {
 
@@ -248,20 +248,20 @@ public class Hand : IComparable {
         }
         return false;
     }
-    static bool ThreeOfAKind(Card[] cards, int[] amounts) {
+    public static bool ThreeOfAKind(Card[] cards, int[] amounts) {
         foreach (int i in amounts) {
             if (i >= 3) { return true; }
         }
         return false;
     }
-    static bool TwoPair(Card[] cards, int[] amounts) {
+    public static bool TwoPair(Card[] cards, int[] amounts) {
         int pairs = 0;
         foreach (int i in amounts) {
             if (i >= 2) { pairs++; }
         }
         return pairs == 2;
     }
-    static bool Pair(Card[] cards, int[] amounts) {
+    public static bool Pair(Card[] cards, int[] amounts) {
         foreach (int i in amounts) {
             if (i >= 2) { return true; }
         }

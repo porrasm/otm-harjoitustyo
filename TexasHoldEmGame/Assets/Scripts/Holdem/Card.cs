@@ -2,6 +2,12 @@
 
 public class Card : IComparable {
 
+    public Card(int suit, int number) {
+        SetCard(suit, number);
+    }
+    public Card() {
+    }
+
     int suit;
     public int Suit { get { return suit; } }
     int number;

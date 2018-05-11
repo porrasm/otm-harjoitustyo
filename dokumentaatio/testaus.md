@@ -1,0 +1,2 @@
+### Multiplayer
+Koska peli on ainoastaan online moninpeli, tuli testauksen kanssa ongelmia ja se on jäänyt kriittisen vähiin. En löytänyt tapaa kuinka testata online toiminnallisuuksia, muuten kuin manuaalisesti.
