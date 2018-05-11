@@ -13,10 +13,17 @@
         return TurnString;
     }
 
+    /// <summary>
+    /// Sets the player of this turn.
+    /// </summary>
+    /// <param name="param1">Player</param>
     public void SetPlayer(Player p) {
         player = p;
     }
 
+    /// <summary>
+    /// Resets the turn.
+    /// </summary>
     public void NewTurn() {
         Fold = false;
         Pay = 0;

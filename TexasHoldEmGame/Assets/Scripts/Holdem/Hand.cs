@@ -21,25 +21,9 @@ public class Hand : IComparable {
         kickerValues = new int[5];
     }
     
-    public bool Tie(Hand other) {
-
-        if (value != other.Value) {
-            return false;
-        }
-
-        for (int i = 0; i < 5; i++) {
-            if (kickerValues[i] != other.KickerValues[i]) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     public override string ToString() {
         return handString;
     }
-
     public int CompareTo(object obj) {
 
         Hand other = (Hand)obj;
@@ -81,6 +65,12 @@ public class Hand : IComparable {
     }
 
     // Static methods
+
+    /// <summary>
+    /// Return the highest possible 5 card hand from the maximum of 7 cards.
+    /// </summary>
+    /// <param name="param1">Array of cards</param>
+    /// <returns>Best hand</returns>
     public static Hand GetHighestHand(Card[] playerCards) {
 
         // Check card amount
@@ -454,6 +444,10 @@ public class Hand : IComparable {
         return amounts;
     }
 
+    /// <summary>
+    /// Returns the hand as a string. 4 would return "Three of a Kind".
+    /// </summary>
+    /// <param name="param1">Hand value.</param>
     public static string HandToString(double value) {
 
         string hand = string.Empty;

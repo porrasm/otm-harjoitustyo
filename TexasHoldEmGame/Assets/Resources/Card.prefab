@@ -25,7 +25,6 @@ GameObject:
   - component: {fileID: 65228279503893682}
   - component: {fileID: 54315313506863142}
   - component: {fileID: 114000830858298478}
-  - component: {fileID: 114168181060691822}
   m_Layer: 0
   m_Name: Card
   m_TagString: Card
@@ -400,22 +399,6 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 0.1
---- !u!114 &114168181060691822
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1118875082948160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e74c0b9a1bd9204f94444f13c4ebb95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Distance: 5
-  MinDistance: 1
-  MaxDistance: 10
-  RotationSens: 0.4
-  TableHeight: 3.6
 --- !u!114 &114655366442388348
 MonoBehaviour:
   m_ObjectHideFlags: 1

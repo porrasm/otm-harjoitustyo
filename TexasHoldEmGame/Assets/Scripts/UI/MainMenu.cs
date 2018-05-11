@@ -15,12 +15,6 @@ public class MainMenu : MonoBehaviour {
     [SerializeField]
     private Transform createMenu, joinMenu;
 
-    /*
-    [SerializeField]
-    private Button backBtton, singePlayerButton, createMenuButton, joinMenuButton, settingsMenuButton,
-        createServerButton, joinServerButton, quickJoinButton;
-    */
-
     [SerializeField]
     private InputField createPassword, createBuyIn, joinPassword;
 
@@ -38,28 +32,45 @@ public class MainMenu : MonoBehaviour {
 
     // Main
 
+    /// <summary>
+    /// Loads the main menu.
+    /// </summary>
     public void ActivateMainMenu() {
         currentMenu.gameObject.SetActive(false);
         currentMenu = MainMenuPanel;
         currentMenu.gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Loads the create menu.
+    /// </summary>
     public void ActivateCreateMenu() {
         currentMenu.gameObject.SetActive(false);
         currentMenu = createMenu;
         currentMenu.gameObject.SetActive(true);
     }
+
+    /// <summary>
+    /// Loads the join menu.
+    /// </summary>
     public void ActivateJoinMenu() {
         currentMenu.gameObject.SetActive(false);
         currentMenu = joinMenu;
         currentMenu.gameObject.SetActive(true);
     }
+
+    /// <summary>
+    /// Quits the application.
+    /// </summary>
     public void Quit() {
         Application.Quit();
     }
 
     // Create
 
+    /// <summary>
+    /// Creates a match based on the settings.
+    /// </summary>
     public void CreateMatch() {
 
         string serverName = createPassword.text;
@@ -87,9 +98,16 @@ public class MainMenu : MonoBehaviour {
 
     // Join
 
+    /// <summary>
+    /// Calls the quick join method on the NetworkManager
+    /// </summary>
     public void QuickJoin() {
         GetNetworkManager().QuickJoin();
     }
+
+    /// <summary>
+    /// Calls the private join method on the NetworkManager
+    /// </summary>
     public void JoinPrivate() {
         string password = "HIDDEN: " + joinPassword.text;
         GetNetworkManager().PrivateJoin(password);

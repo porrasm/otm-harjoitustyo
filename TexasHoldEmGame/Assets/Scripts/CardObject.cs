@@ -82,15 +82,30 @@ public class CardObject : NetworkBehaviour {
         }
     }
 
-
+    /// <summary>
+    /// Initializes this card.
+    /// </summary>
+    /// <param name="param1">Owner as a GameObject</param>
+    /// <param name="param2">Card</param>
+    /// <returns>What this method returns.</returns>
     public void Initialize(GameObject player, Card card) {
         this.owner = player;
         this.card = card;
     }
+
+    /// <summary>
+    /// Sets the owner of this card object for all clients. Must be called on the server.
+    /// </summary>
+    /// <param name="param1">Owner</param>
 	[ClientRpc]
     public void RpcSetOwner(GameObject player) {
         this.owner = player;
     }
+
+    /// <summary>
+    /// Sets the card for this card object.
+    /// </summary>
+    /// <param name="param1">Card</param>
 	[ClientRpc]
     public void RpcSetCard(int suit, int number) {
         card = new Card();
@@ -98,6 +113,11 @@ public class CardObject : NetworkBehaviour {
         UpdateCard();
     }
 
+    /// <summary>
+    /// Sets the target position of this card object.
+    /// </summary>
+    /// <param name="param1">Position as a Vector3</param>
+    /// <param name="param2">Rotation as a Vector3</param>
     public void SetTargetPosition(Vector3 position, Vector3 rotation) {
         if (position != Vector3.zero) {
             rb.isKinematic = true;
@@ -105,11 +125,18 @@ public class CardObject : NetworkBehaviour {
         targetPosition = position;
         targetRotation = rotation;
     }
+
+    /// <summary>
+    /// Reveals the card for all players.
+    /// </summary>
     public void TurnCard() {
         targetRotation += new Vector3(0, 0, 180);
         arrived = false;
     }
 
+    /// <summary>
+    /// Destroys the card.
+    /// </summary>
     public void KillCard() {
         Transform deck = GameObject.FindGameObjectWithTag("Table").GetComponent<Table>().Deck;
         targetPosition = deck.position;
@@ -118,6 +145,9 @@ public class CardObject : NetworkBehaviour {
         kill = true;
     }
 
+    /// <summary>
+    /// Updates the cards textures to match the card of this card object.
+    /// </summary>
     public void UpdateCard() {
 
         suit.GetComponent<Renderer>().material.mainTexture = Tools.GetSuitTexture(card);
@@ -129,6 +159,9 @@ public class CardObject : NetworkBehaviour {
         initialized = true;
     }
 
+    /// <summary>
+    /// Disables this card.
+    /// </summary>
     public void DisableCard() {
 
         suit.GetComponent<Material>().color = new Color(0, 0, 0, 0);

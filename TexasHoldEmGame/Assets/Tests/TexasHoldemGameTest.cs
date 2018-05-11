@@ -26,7 +26,7 @@ public class TexasHoldemGameTest {
 
         yield return new WaitForSeconds(1);
 
-        game.PlaceHolderStart();
+        game.StartGame();
 
         Assert.IsTrue(game.Players.Length == 1);
         Assert.IsFalse(game.GameIsReady);

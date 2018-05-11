@@ -17,17 +17,23 @@ public class ScoreboardUI : NetworkBehaviour {
         game = GameObject.FindGameObjectWithTag("Scripts").GetComponent<TexasHoldEm>();
     }
 
+    /// <summary>
+    /// Initializes the scoreboard. Must be called on the server.
+    /// </summary>
     public void InitializeScoreboard() {
         RpcAmountToDisable(10 - game.Players.Length);
     }
 
     [ClientRpc]
-    void RpcAmountToDisable(int amount) {
+    private void RpcAmountToDisable(int amount) {
         for (int i = 0; i < amount; i++) {
             playerParent.transform.GetChild(10 - i).gameObject.SetActive(false);
         }
     }
 
+    /// <summary>
+    /// Updates the scoreboard for all clients. Must be called on the server.
+    /// </summary>
     public void UpdateScoreBoard() {
 
         print("Updating scoreboard.");
@@ -37,6 +43,9 @@ public class ScoreboardUI : NetworkBehaviour {
         }
     }
 
+    /// <summary>
+    /// Reveals results on the scoreboard for all clients. Must be called on the server.
+    /// </summary>
     public void RevealScoreBoard() {
 
         print("Revealing scoreboard.");
@@ -63,7 +72,7 @@ public class ScoreboardUI : NetworkBehaviour {
     }
 	
     [ClientRpc]
-    void RpcSetOne(int index, string name, string hand, int win, int money) {
+    private void RpcSetOne(int index, string name, string hand, int win, int money) {
 
         Text nameText = playerParent.GetChild(index).GetChild(0).GetChild(0).GetComponent<Text>();
         Text handText = playerParent.GetChild(index).GetChild(0).GetChild(1).GetComponent<Text>();
@@ -77,6 +86,11 @@ public class ScoreboardUI : NetworkBehaviour {
     }
 
     // Client actions
+
+    /// <summary>
+    /// Shows the scoreboard for this client. Must be called on the client.
+    /// </summary>
+    /// <param name="param1">Show</param>
     public void ShowScoreBoard(bool enable) {
         transform.GetChild(0).gameObject.SetActive(enable);
     }

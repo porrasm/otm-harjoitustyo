@@ -8,6 +8,9 @@ public class Deck {
     int cardIndex;
     public int CardIndex { get { return cardIndex; } set { cardIndex = value; } }
 
+    /// <summary>
+    /// Initializes the deck with the regular 52 cards.
+    /// </summary>
 	public void InitializeDeck() {
 
         cards = new Card[52];
@@ -26,6 +29,9 @@ public class Deck {
         }
     }
 
+    /// <summary>
+    /// Shuffles the deck.
+    /// </summary>
     public void ShuffleDeck() {
 
         List<Card> copy = new List<Card>();
@@ -44,6 +50,10 @@ public class Deck {
         }
     }
 
+    /// <summary>
+    /// Returns the top card of this deck.
+    /// </summary>
+    /// <returns>Top card</returns>
     public Card GetCard() {
         Card card = cards[cardIndex];
         cardIndex++;

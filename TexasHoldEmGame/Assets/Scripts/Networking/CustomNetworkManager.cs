@@ -11,6 +11,11 @@ public class CustomNetworkManager : NetworkManager {
     private string password;
     public int buyIn;
 
+    /// <summary>
+    /// Creates a match.
+    /// </summary>
+    /// <param name="param1">Name of the match</param>
+    /// <param name="param1">Buy in of the match</param>
     public void CreateMatch(string name, int buyIn) {
 
         LoadGame();
@@ -22,11 +27,20 @@ public class CustomNetworkManager : NetworkManager {
         singleton.StartMatchMaker();
         singleton.matchMaker.CreateMatch(name, 10, true, "", "", "", 0, 0, OnMatchCreate);
     }
+
+    /// <summary>
+    /// Joins the first available match.
+    /// </summary>
     public void QuickJoin() {
         singleton.StopMatchMaker();
         singleton.StartMatchMaker();
         singleton.matchMaker.ListMatches(0, 10, "", true, 0, 0, QuickJoinCallback);
     }
+
+    /// <summary>
+    /// Joins to a private match with a password.
+    /// </summary>
+    /// <param name="param1">Password</param>
     public void PrivateJoin(string password) {
         this.password = password;
 
@@ -34,7 +48,8 @@ public class CustomNetworkManager : NetworkManager {
         singleton.StartMatchMaker();
         singleton.matchMaker.ListMatches(0, 10, "", true, 0, 0, PrivateJoinCallback);
     }
-    public void QuickJoinCallback(bool success, string extendedInfo, List<MatchInfoSnapshot> matches) {
+
+    private void QuickJoinCallback(bool success, string extendedInfo, List<MatchInfoSnapshot> matches) {
 
         if (!success) { return; }
 
@@ -48,7 +63,7 @@ public class CustomNetworkManager : NetworkManager {
             }
         }
     }
-    public void PrivateJoinCallback(bool success, string extendedInfo, List<MatchInfoSnapshot> matches) {
+    private void PrivateJoinCallback(bool success, string extendedInfo, List<MatchInfoSnapshot> matches) {
 
         if (!success) { return; }
 
@@ -62,7 +77,7 @@ public class CustomNetworkManager : NetworkManager {
             }
         }
     }
-    public void JoinMatch(MatchInfoSnapshot match, string password) {
+    private void JoinMatch(MatchInfoSnapshot match, string password) {
         LoadGame();
         singleton.matchMaker.JoinMatch(match.networkId, password, "", "", 0, 0, OnMatchJoined);
     }
@@ -71,7 +86,7 @@ public class CustomNetworkManager : NetworkManager {
         SceneManager.LoadScene("Game");
     }
 
-
+    // Class overrides
     public override void OnServerError(NetworkConnection conn, int errorCode) {
         SceneManager.LoadScene(0);
     }
@@ -81,7 +96,7 @@ public class CustomNetworkManager : NetworkManager {
     public override void OnServerDisconnect(NetworkConnection conn) {
 
         print("Client disconnected, removing player");
-                
+
         TexasHoldEm game = GameObject.FindGameObjectWithTag("Scripts").GetComponent<TexasHoldEm>();
         Player player = null;
 

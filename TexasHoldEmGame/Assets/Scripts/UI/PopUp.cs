@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class PopUp : MonoBehaviour {
 
+    private TexasHoldEm game;
+
     private RectTransform rt;
 
     private float progress = 15;
@@ -20,15 +22,19 @@ public class PopUp : MonoBehaviour {
     [SerializeField]
     private Vector2 startPos = new Vector3(110, 0);
 
+    public int index;
+
     void Start() {
         rt = GetComponent<RectTransform>();
-        PushAllUp();
         textColor = textObjext.color;
         backColor = background.color;
+        game = GameObject.FindGameObjectWithTag("Scripts").GetComponent<TexasHoldEm>();
     }
 
     void Update() {
         progress -= Time.deltaTime;
+
+        UpdatePosition();
 
         if (progress < 0) {
             Destroy(gameObject);
@@ -37,29 +43,25 @@ public class PopUp : MonoBehaviour {
             float current = progress / 5;
             textObjext.color = new Color(textColor.r, textColor.g, textColor.b, current);
             background.color = new Color(backColor.r, backColor.g, backColor.b, current);
-        } 
-    }
-
-    void PushAllUp() {
-
-        GameObject[] popUps = GameObject.FindGameObjectsWithTag("PopUp");
-
-        foreach (GameObject o in popUps) {
-            if (o != gameObject) {
-                o.GetComponent<PopUp>().PushUp();
-            }
         }
     }
 
     private string text;
 
+    /// <summary>
+    /// Set the text of this pop up-
+    /// </summary>
+    /// <param name="param1">Text</param>
     public void Initialize(string text) {
         rt = GetComponent<RectTransform>();
         this.text = text;
         textObjext.text = text;
         rt.anchoredPosition = startPos;
     }
-    public void PushUp() {
-        rt.anchoredPosition = rt.anchoredPosition + new Vector2(0, 35);
+    
+    private void UpdatePosition() {
+        int difference = game.popUps - index;
+        int height = difference * 35;
+        rt.anchoredPosition = new Vector2(startPos.x, startPos.y + height);
     }
 }

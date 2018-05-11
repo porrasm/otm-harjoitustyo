@@ -25,15 +25,15 @@ public class TexasHoldEm : NetworkBehaviour {
     private int buyIn;
     public int BuyIn { get { return buyIn; } }
 
-    private bool roundIsOn;
+    private bool roundIsOn, gameIsReady, canContinue;
     public bool RoundIsOn { get { return roundIsOn; } }
-
-    private bool gameIsReady;
     public bool GameIsReady { get { return gameIsReady; } }
-
-    private bool canContinue;
+    public bool CanContinue { get { return canContinue; } set { canContinue = value; } }
 
     private string gameState;
+
+    [SyncVar]
+    public int popUps = 0;
 
     // Settings
 
@@ -47,6 +47,7 @@ public class TexasHoldEm : NetworkBehaviour {
     private int smallBlind = 10, bigBlind = 20;
 
 
+    // Methods
     void Start() {
 
         if (!isServer) { return; }
@@ -56,7 +57,7 @@ public class TexasHoldEm : NetworkBehaviour {
         dealer = 0;
         table = GameObject.FindGameObjectWithTag("Table").GetComponent<Table>();
         scoreboard = GameObject.FindGameObjectWithTag("Scoreboard").GetComponent<ScoreboardUI>();
-        Invoke("PlaceHolderStart", 3);
+        Invoke("StartGame", 3);
     }
 
     void Update() {
@@ -68,6 +69,20 @@ public class TexasHoldEm : NetworkBehaviour {
         }
     }
 
+    // Player list
+    [ClientRpc]
+    private void RpcGivePlayerListToClients() {
+        UpdatePlayers();
+    }
+    [ClientRpc]
+    private void RpcKillPlayerList() {
+        if (isServer) { return; }
+        players = null;
+    }
+
+    /// <summary>
+    /// Updates the list of players.
+    /// </summary>
     public void UpdatePlayers() {
         GameObject[] p = GameObject.FindGameObjectsWithTag("Player");
         players = new Player[p.Length];
@@ -77,56 +92,51 @@ public class TexasHoldEm : NetworkBehaviour {
     }
 
     // Game
-    public void PlaceHolderStart() {
-        StartCoroutine(PlaceholderStartCoroutine());
+    /// <summary>
+    /// Starts the game. Must be called on the server.
+    /// </summary>
+    public void StartGame() {
+        StartCoroutine(StartCoroutine());
     }
-    IEnumerator PlaceholderStartCoroutine() {
+    private IEnumerator StartCoroutine() {
+
+        canContinue = false;
+        UpdatePlayers();
 
         gameState = "Game starting...";
         PopUp(gameState);
         buyIn = GameObject.Find("NetworkManager").GetComponent<CustomNetworkManager>().buyIn;
 
+        while(!canContinue) {
+            yield return new WaitForSeconds(0.5f);
+            RpcGivePlayerListToClients();
+        }
+
+        RpcKillPlayerList();
+
         while (true) {
 
+            if (fillWithAI) {
+                for (int i = 0; i < 10 - players.Length; i++) {
+                    GameObject newAI = Instantiate(aiPrefab);
+                    newAI.transform.name = "AI Player " + (i + 1);
+                    NetworkServer.Spawn(newAI);
+                }
+            }
+
             UpdatePlayers();
+            SetPlayerPositions();
 
-            bool allReady = true;
-            foreach (Player player in players) {
-                if (!player.Ready) {
-                    print(player.name + " is not ready");
-                    allReady = false;
-                }
+            foreach (Player p in players) {
+                p.Money = buyIn;
+                p.Ready = false;
             }
 
-            if (allReady) {
-
-                UpdatePlayers();
-
-                foreach (Player p in players) {
-                    if (!p.Ready) { continue; }
-                }
-
-                if (fillWithAI) {
-                    for (int i = 0; i < 10 - players.Length; i++) {
-                        GameObject newAI = Instantiate(aiPrefab);
-                        newAI.transform.name = "AI Player " + (i + 1);
-                        NetworkServer.Spawn(newAI);
-                    }
-                }
-
-                UpdatePlayers();
-                SetPlayerPositions();
-
-                foreach (Player p in players) {
-                    p.Money = buyIn;
-                    p.Ready = false;
-                }
-
-                break;
-            }
-
-            yield return new WaitForSeconds(1);
+            break;
         }
+
+        yield return new WaitForSeconds(1);
+
 
         foreach (Player p in players) {
             p.RpcGameUIStart();
@@ -138,6 +148,9 @@ public class TexasHoldEm : NetworkBehaviour {
         StartHoldemRound();
     }
 
+    /// <summary>
+    /// Starts a round. Must be called on the server.
+    /// </summary>
     public void StartHoldemRound() {
         if (roundIsOn) {
             return;
@@ -147,7 +160,7 @@ public class TexasHoldEm : NetworkBehaviour {
         roundIsOn = true;
         StartCoroutine(StartHoldemRoundCoroutine());
     }
-    IEnumerator StartHoldemRoundCoroutine() {
+    private IEnumerator StartHoldemRoundCoroutine() {
 
         roundIsOn = true;
         print("GAME: Starting round.");
@@ -188,14 +201,14 @@ public class TexasHoldEm : NetworkBehaviour {
         // Blinds
         print("GAME: Paying blinds...");
         yield return new WaitForSeconds(1);
-        GetNeeded(PlayerByOrder(1));
-        Bet(PlayerByOrder(1), smallBlind);
-        PopUp(PlayerByOrder(1).name + " paid the small blind of " + Tools.IntToMoney(smallBlind));
+        GetNeeded(PlayerByOrder(ActivePlayers() - 2));
+        Bet(PlayerByOrder(ActivePlayers() - 2), smallBlind);
+        PopUp(PlayerByOrder(ActivePlayers() - 2).name + " paid the small blind of " + Tools.IntToMoney(smallBlind));
         Tools.UpdatePlayerUIs(players);
         yield return new WaitForSeconds(1);
-        GetNeeded(PlayerByOrder(2));
-        Bet(PlayerByOrder(2), bigBlind);
-        PopUp(PlayerByOrder(2).name + " paid the big blind of " + Tools.IntToMoney(bigBlind));
+        GetNeeded(PlayerByOrder(ActivePlayers() - 1));
+        Bet(PlayerByOrder(ActivePlayers() - 1), bigBlind);
+        PopUp(PlayerByOrder(ActivePlayers() - 1).name + " paid the big blind of " + Tools.IntToMoney(bigBlind));
         Tools.UpdatePlayerUIs(players);
         yield return new WaitForSeconds(1);
 
@@ -332,7 +345,7 @@ public class TexasHoldEm : NetworkBehaviour {
     }
 
     // Betting
-    IEnumerator BetRound() {
+    private IEnumerator BetRound() {
 
         if (SkipBettingRound()) {
             canContinue = true;
@@ -471,7 +484,7 @@ public class TexasHoldEm : NetworkBehaviour {
         if (winners == 1) {
             PopUp(sortedPlayers[0].name + " wins with " + Hand.HandToString(sortedPlayers[0].Hand.Value));
         } else {
-            PopUp("There are " + winners  +" winners.");
+            PopUp("There are " + winners + " winners.");
         }
 
         scoreboard.RevealScoreBoard();
@@ -524,19 +537,6 @@ public class TexasHoldEm : NetworkBehaviour {
         }
     }
 
-    void Blinds() {
-        currentPlayer = PlayerByOrder(1);
-        if (currentPlayer.CanPay(smallBlind)) {
-            Bet(currentPlayer, smallBlind);
-            print("Player paid small blind. tableValue: " + tableValue);
-        }
-        currentPlayer = PlayerByOrder(2);
-        if (currentPlayer.CanPay(bigBlind)) {
-            Bet(currentPlayer, bigBlind);
-            print("Player paid big blind. tableValue: " + tableValue);
-        }
-    }
-
     public void RemovePlayer(Player player) {
 
         Player[] newPlayers = new Player[players.Length - 1];
@@ -552,7 +552,7 @@ public class TexasHoldEm : NetworkBehaviour {
     }
 
     // Tools
-    Player PlayerByOrder(int amount) {
+    private Player PlayerByOrder(int amount) {
 
         int index = (dealer + amount) % players.Length;
         Player player = players[index];
@@ -568,7 +568,7 @@ public class TexasHoldEm : NetworkBehaviour {
 
         return player;
     }
-    int IndexByOrder(int amount) {
+    private int IndexByOrder(int amount) {
 
         int index = (dealer + amount) % players.Length;
         Player player = players[index];
@@ -584,11 +584,11 @@ public class TexasHoldEm : NetworkBehaviour {
 
         return index;
     }
-    int GetNeeded(Player player) {
+    private int GetNeeded(Player player) {
         player.Needed = BiggestBet() - player.Bet;
         return player.Needed;
     }
-    int ActivePlayers() {
+    private int ActivePlayers() {
         int playerAmount = 0;
         foreach (Player p in players) {
             if (!p.Lost) {
@@ -598,6 +598,10 @@ public class TexasHoldEm : NetworkBehaviour {
         return playerAmount;
     }
 
+    /// <summary>
+    /// Return the amount of the biggest bet.
+    /// </summary>
+    /// <returns>Biggest bet</returns>
     public int BiggestBet() {
 
         int biggest = players[0].Bet;
@@ -630,11 +634,12 @@ public class TexasHoldEm : NetworkBehaviour {
 
     private void PopUp(string text) {
         print("Pop Up: " + text);
-        RpcPopUpAllPlayers(text);
+        RpcPopUpAllPlayers(text, popUps);
+        popUps++;
     }
     [ClientRpc]
-    private void RpcPopUpAllPlayers(string text) {
-        Tools.PopUp(text);
+    private void RpcPopUpAllPlayers(string text, int index) {
+        Tools.PopUp(text, index);
     }
 
     private void EndGame() {

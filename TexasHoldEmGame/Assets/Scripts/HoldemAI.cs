@@ -12,6 +12,11 @@ public class HoldemAI : Player {
         AiEnabled = true;
     }
 
+    /// <summary>
+    /// Enables or disables the turn of this player. Must be called on the server.
+    /// </summary>
+    /// <param name="param1">Enable</param>
+    /// <param name="param2">PayUp round>
     public override void EnablePlayerTurn(bool enable, bool payUp) {
 
         if (!AiEnabled) {

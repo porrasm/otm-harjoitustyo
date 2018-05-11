@@ -18,9 +18,6 @@ public class Player : NetworkBehaviour, IComparable {
     [SerializeField]
     HoldemUI ui;
 
-    [SerializeField]
-    private TextMesh textMesh;
-
     // Syncvars
     [SyncVar]
     private bool ready, folded, lost;
@@ -45,18 +42,30 @@ public class Player : NetworkBehaviour, IComparable {
     }
 
     // Game actions
+
+    /// <summary>
+    /// Folds the round.
+    /// </summary>
     [Command]
     public void CmdFold() {
         turn.TurnString = transform.name + " folds";
         turn.Fold = true;
         ready = true;
     }
+
+    /// <summary>
+    /// Checks the round.
+    /// </summary>
     [Command]
     public void CmdCheck() {
         turn.TurnString = transform.name + " checks. ";
         turn.Pay = 0;
         ready = true;
     }
+
+    /// <summary>
+    /// Calls the round.
+    /// </summary>
     [Command]
     public void CmdCall() {
         if (needed == 0) { CmdCheck(); return; }
@@ -64,6 +73,11 @@ public class Player : NetworkBehaviour, IComparable {
         turn.Pay = 0;
         ready = true;
     }
+
+    /// <summary>
+    /// Raises by the amount given.
+    /// </summary>
+    /// <param name="param1">Raise amount</param>
     [Command]
     public void CmdRaise(int amount) {
         if (amount == 0) { CmdCall(); return; }
@@ -75,30 +89,54 @@ public class Player : NetworkBehaviour, IComparable {
 
 
     // Server side methods
+
+    /// <summary>
+    /// Sets the player ready state.
+    /// </summary>
+    /// <param name="param1">Ready</param>
     [Command]
     public void CmdSetReady(bool ready) {
         this.ready = ready;
     }
+
+    /// <summary>
+    /// Sets the player name.
+    /// </summary>
+    /// <param name="param1">Name.</param>
     [Command]
     public void CmdSetName(string name) {
         RpcSetName(name);
     }
+
+    /// <summary>
+    /// Update the name to all clients. Must be called on the server.
+    /// </summary>
+    /// <param name="param1">Name</param>
     [ClientRpc]
     public void RpcSetName(string name) {
         transform.name = name;
-        textMesh.text = name;
     }
 
+    /// <summary>
+    /// Rrsets the player cards.
+    /// </summary>
     public void ResetCards() {
         cards = new Card[7];
         RpcResetCards();
     }
+
+    /// <summary>
+    /// Resets the cards for the clients. Must be called on the server.
+    /// </summary>
     [ClientRpc]
     void RpcResetCards() {
         cards = new Card[7];
     }
 
-
+    /// <summary>
+    /// Gives player a card.
+    /// </summary>
+    /// <param name="param1">Card</param>>
     public void GiveCard(Card card) {
 
         for (int i = 0; i < cards.Length; i++) {
@@ -110,6 +148,12 @@ public class Player : NetworkBehaviour, IComparable {
 
         RpcUpdateCards(card.Suit, card.Number);
     }
+
+    /// <summary>
+    /// Updates player cards for the local player. Must be called on the server.
+    /// </summary>
+    /// <param name="param1">Suit</param>
+    /// <param name="param2">Number</param>
     [ClientRpc]
     public void RpcUpdateCards(int suit, int number) {
 
@@ -131,9 +175,21 @@ public class Player : NetworkBehaviour, IComparable {
     }
 
     // Other
+
+    /// <summary>
+    /// Whether a player can pay a certain amount.
+    /// </summary>
+    /// <param name="param1">Amount</param>
+    /// <returns>'true' if the player has enough money</returns>
     public bool CanPay(int amount) {
         return money - amount >= 0;
     }
+
+    /// <summary>
+    /// Enables or disables the turn of this player. Must be called on the server.
+    /// </summary>
+    /// <param name="param1">Enable</param>
+    /// <param name="param2">PayUp round>
     public virtual void EnablePlayerTurn(bool enable, bool payUp) {
 
         if (turn == null) {
@@ -142,6 +198,10 @@ public class Player : NetworkBehaviour, IComparable {
         RpcEnablePlayerTurn(enable, payUp);
     }
 
+    /// <summary>
+    /// Enables or disables the turn of this player. Must be called on the server.
+    /// </summary>
+    /// <param name="param1">Enable</param>
     public void EnablePlayerTurn(bool enable) {
 
         if (turn == null) {
@@ -150,7 +210,7 @@ public class Player : NetworkBehaviour, IComparable {
         RpcEnablePlayerTurn(enable, false);
     }
     [ClientRpc]
-    public void RpcEnablePlayerTurn(bool enable, bool payUp) {
+    private void RpcEnablePlayerTurn(bool enable, bool payUp) {
 
         if (!isLocalPlayer) { return; }
 
@@ -162,6 +222,10 @@ public class Player : NetworkBehaviour, IComparable {
         }
     }
 
+
+    /// <summary>
+    /// Updates the UI for this player. Must be called on the server.
+    /// </summary>
     [ClientRpc]
     public void RpcUpdateUI() {
         if (!isLocalPlayer) { return; }
@@ -170,6 +234,9 @@ public class Player : NetworkBehaviour, IComparable {
         }
     }
 
+    /// <summary>
+    /// Resets the UI for this player. Must be called on the server.
+    /// </summary>
     [ClientRpc]
     public void RpcResetUI() {
         if (!isLocalPlayer) { return; }
@@ -178,6 +245,9 @@ public class Player : NetworkBehaviour, IComparable {
         ui.ResetUI();
     }
 
+    /// <summary>
+    /// Enables the game UI for this player. Must be called on the server.
+    /// </summary>
     [ClientRpc]
     public void RpcGameUIStart() {
         if (!isLocalPlayer) { return; }
@@ -185,6 +255,25 @@ public class Player : NetworkBehaviour, IComparable {
         ui.EnablePanel(true);
     }
 
+    /// <summary>
+    /// Updates the player hand value for the client. Must be called on the server.
+    /// </summary>
+    public void UpdateHand() {
+        RpcUpdateHand(hand.Value);
+    }
+    [ClientRpc]
+    private void RpcUpdateHand(int handValue) {
+        if (!isLocalPlayer || isServer) { return; }
+        if (hand == null) {
+            hand = new Hand();
+        }
+        hand.SetValue(handValue);
+    }
+
+    /// <summary>
+    /// Sets the player position correctly.
+    /// </summary>
+    /// <param name="param1">Position as Transform</param>
     public void SetPlayerPosition(Transform position) {
 
         transform.position = position.position;
@@ -194,11 +283,11 @@ public class Player : NetworkBehaviour, IComparable {
         RpcSetPlayerRotation(position.eulerAngles);
     }
     [ClientRpc]
-    public void RpcSetPlayerPosition(Vector3 position) {
+    private void RpcSetPlayerPosition(Vector3 position) {
         transform.position = position;
     }
     [ClientRpc]
-    public void RpcSetPlayerRotation(Vector3 rotation) {
+    private void RpcSetPlayerRotation(Vector3 rotation) {
         transform.eulerAngles = rotation;
     }
 
@@ -208,11 +297,5 @@ public class Player : NetworkBehaviour, IComparable {
         }
         Player player = (Player)obj;
         return hand.CompareTo(player.Hand);
-    }
-
-    // Preset pop ups
-
-    public string PlayerStartsTurn() {
-        return transform.name + "'s turn.";
     }
 }

@@ -38,9 +38,23 @@ public class Table : NetworkBehaviour {
         }
     }
 
+    /// <summary>
+    /// Creates a card object for all clients. Must be called on the server.
+    /// </summary>
+    /// <param name="param1">The owner of the card</param>
+    /// <param name="param2">Card</param>
+    /// <returns>What this method returns.</returns>
     public void SpawnCard(GameObject owner, Card card) {
         SpawnCard(owner, card, transform);
     }
+
+    /// <summary>
+    /// Creates a card object for all clients and moves it to the target position. Must be called on the server.
+    /// </summary>
+    /// <param name="param1">The owner of the card</param>
+    /// <param name="param2">Card</param>
+    /// <param name="param3">Target position</param>
+    /// <returns>What this method returns.</returns>
     public void SpawnCard(GameObject owner, Card card, Transform target) {
 
         GameObject newCard = Instantiate(cardPrefab);
@@ -54,10 +68,20 @@ public class Table : NetworkBehaviour {
         NetworkServer.Spawn(newCard);
     }
 
-
+    /// <summary>
+    /// Returns the position of the player by index.
+    /// </summary>
+    /// <param name="param1">Index of the player</param>
+    /// <returns>Position of the player</returns>
     public Transform GetPlayerPosition(int index) {
         return playerPositions.GetChild(index);
     }
+
+    /// <summary>
+    /// Returns the position of the table card by index.
+    /// </summary>
+    /// <param name="param1">Index of the card</param>
+    /// <returns>Position of the card</returns>
     public Transform GetCardPosition(int index) {
         return cardPositions.GetChild(index);
     }

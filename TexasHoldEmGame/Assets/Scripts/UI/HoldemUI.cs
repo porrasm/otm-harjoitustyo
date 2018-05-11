@@ -21,14 +21,17 @@ public class HoldemUI : MonoBehaviour {
     [SerializeField]
     InputField raiseAmount;
 
-    
-
     void Start() {
         player = transform.root.GetComponent<Player>();
         game = GameObject.FindGameObjectWithTag("Scripts").GetComponent<TexasHoldEm>();
         EnableUI(false);
+        InvokeRepeating("UpdatePlayers", 1, 0.2f);
+        if (!player.isServer) { startButton.gameObject.SetActive(false); }
     }
 
+    /// <summary>
+    /// Updates the UI for this player
+    /// </summary>
     public void UpdateUI() {
 
         // Cards
@@ -77,7 +80,7 @@ public class HoldemUI : MonoBehaviour {
             hand.text = "Folded";
             callAmount.text = "0.00";
         } else {
-            hand.text = player.Hand.HandString;
+            hand.text = Hand.HandToString(player.Hand.Value);
             callAmount.text = callText;
         }
 
@@ -88,16 +91,28 @@ public class HoldemUI : MonoBehaviour {
         tableAmount.text = "Table: " + Tools.IntToMoney(game.TableValue);
     }
 
+    /// <summary>
+    /// Enables the UI for this player.
+    /// </summary>
+    /// <param name="param1">Enable</param>
     public void EnableUI(bool enable) {
         callButton.interactable = enable;
         raiseButton.interactable = enable;
         foldButton.interactable = enable;
         raiseAmount.interactable = enable;
     }
+
+    /// <summary>
+    /// Enables the game panel UI for this player.
+    /// </summary>
+    /// <param name="param1">Enable</param>
     public void EnablePanel(bool enable) {
         panel.gameObject.SetActive(enable);
     }
 
+    /// <summary>
+    /// Resets the UI for this player.
+    /// </summary>
     public void ResetUI() {
 
         for (int i = 0; i < cardParent.childCount; i++) {
@@ -117,6 +132,9 @@ public class HoldemUI : MonoBehaviour {
         hand.text = "Nothing";
     }
 
+    /// <summary>
+    /// Enables the UI which is used in a payup situation for this player.
+    /// </summary>
     public void PayupUI() {
         callButton.interactable = true;
         raiseButton.interactable = false;
@@ -126,10 +144,18 @@ public class HoldemUI : MonoBehaviour {
 
 
     // Actions
+
+    /// <summary>
+    /// Calls the CmdCall method on the player.
+    /// </summary>
     public void CallCheck() {
         player.CmdCall();
         
     }
+
+    /// <summary>
+    /// Calls the CmdRaise method on the player.
+    /// </summary>
     public void Raise() {
 
         if (!Tools.CorrectInput(raiseAmount.text)) { return; }
@@ -140,6 +166,10 @@ public class HoldemUI : MonoBehaviour {
         }
         player.CmdRaise(amount);
     }
+
+    /// <summary>
+    /// Calls the CmdFold method on the player.
+    /// </summary>
     public void Fold() {
         player.CmdFold();
     }
@@ -148,22 +178,89 @@ public class HoldemUI : MonoBehaviour {
     // Menu
 
     [SerializeField]
-    Transform menuPanel, initPanel;
+    Transform menuPanel, initPanel, playerListParent;
 
     [SerializeField]
     InputField nameField;
 
+    [SerializeField]
+    private Button readyButton, startButton;
 
+    /// <summary>
+    /// Updates the name of this player for all clients. Must be called on the client.
+    /// </summary>
+    public void OnNameChange() {
+        ColorBlock newBlock = readyButton.colors;
+        newBlock.normalColor = Color.red;
+        readyButton.colors = newBlock;
+        player.CmdSetReady(false);
+        transform.root.GetComponent<Player>().CmdSetName(nameField.text);
+    }
+
+    /// <summary>
+    /// Sets the player ready.
+    /// </summary>
     public void Ready() {
+        ColorBlock newBlock = readyButton.colors;
+        newBlock.normalColor = Color.green;
+        readyButton.colors = newBlock;
         transform.root.GetComponent<Player>().CmdSetReady(true);
         transform.root.GetComponent<Player>().CmdSetName(nameField.text);
     }
 
+    /// <summary>
+    ///Enables or disables the menu for this player.
+    /// </summary>
+    /// <param name="enable">Enable</param>
     public void EnableMenu(bool enable) {
         menuPanel.gameObject.SetActive(enable);
     }
+
+    /// <summary>
+    /// Disables the 'lobby menu' for this player.
+    /// </summary>
     public void DisableInit() {
         initPanel.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Starts the game. Must be called on the server / host.
+    /// </summary>
+    public void StartGame() {
+        game.CanContinue = true;
+        CancelInvoke();
+    }
+
+    void UpdatePlayers() {
+
+        if (game.Players == null) {
+            CancelInvoke();
+        }
+
+        for (int i = 0; i < 10; i++) {
+            playerListParent.GetChild(i).gameObject.SetActive(false);
+        }
+
+        bool allReady = true;
+
+        for (int i = 0; i < game.Players.Length; i++) {
+            playerListParent.GetChild(i).gameObject.SetActive(true);
+            playerListParent.GetChild(i).GetChild(0).GetComponent<Text>().text = game.Players[i].name;
+            if (game.Players[i].Ready) {
+                playerListParent.GetChild(i).GetComponent<Image>().color = Color.green;
+            } else {
+                allReady = false;
+                playerListParent.GetChild(i).GetComponent<Image>().color = Color.red;
+            }
+        }
+
+        if (player.isServer) {
+            if (allReady && game.Players.Length > 1) {
+                startButton.interactable = true;
+            } else {
+                startButton.interactable = false;
+            }
+        }
+
+    }
 }
