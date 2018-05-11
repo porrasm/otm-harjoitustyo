@@ -15,7 +15,7 @@ Unity alustaa kaikki muuttujat, joille on asetettu tämä headeri. Nämä eivät
 
 Esimerkkinä toimii HoldemUI luokka, joka on täynnä tällaisia muuttujia.
 
-<img src="dokumentaatio/kuvat/unityInspector.jpg" width="200">
+<img src="dokumentaatio/kuvat/unityInspector.jpg" width="300">
 
 #### Muuttujan header [SyncVar]
 Tämä tarkoittaa, että Unity automaattisesti päivittää tämän muuttujan arvon serveriltä kaikille clienteille.
