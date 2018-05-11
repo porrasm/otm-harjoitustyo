@@ -1,0 +1,6 @@
+title Creating a Game
+User->MainMenu:Click create
+MainMenu->CreateMenu:ActivateCreateMenu()
+User->CreateMenu:Game Settings
+CreateMenu->CustomNetworkManager:CreateMatch()
+CustomNetworkManager->SceneManager:LoadScene("Game")

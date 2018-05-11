@@ -1,0 +1,8 @@
+title Joining a Game
+User->MainMenu:Click join
+MainMenu->CreateMenu:ActivateJoinMenu()
+User->CreateMenu:Join Password
+CreateMenu->CustomNetworkManager:JoinPrivateMatch()
+CustomNetworkManager->CustomNetworkManager:FindMatch()
+CustomNetworkManager->CustomNetworkManager:Join Match
+CustomNetworkManager->SceneManager:LoadScene("Game")

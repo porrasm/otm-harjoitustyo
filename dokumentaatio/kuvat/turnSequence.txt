@@ -1,0 +1,11 @@
+title Turn Sequnce Diagram
+TexasHoldEm->Player: Enable turn
+Player->UI: EnableUI
+UI->User:
+User->UI:Play turn
+UI->Player:Update turn, disable UI
+Player->TexasHoldEm: Ready = true
+
+TexasHoldEm->TexasHoldEm: AnalyzeTurn()
+TexasHoldEm->TexasHoldEm:NextTurn or Deal Card
+

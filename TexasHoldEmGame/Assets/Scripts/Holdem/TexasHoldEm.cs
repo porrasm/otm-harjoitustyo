@@ -46,7 +46,6 @@ public class TexasHoldEm : NetworkBehaviour {
     [SerializeField]
     private int smallBlind = 10, bigBlind = 20;
 
-
     // Methods
     void Start() {
 
