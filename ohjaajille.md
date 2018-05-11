@@ -31,7 +31,7 @@ Otetaan esimerkiksi tilanne, jossa pelaaja haluaa päivittää nimensä.
 - Client A vaihtaa nimeään ja kutsuu metodin CmdSetName(string name)
 - CmdSetName(string name) suoritetaan serverillä ja se kutsuu metodin RpcSetName(string name)
 - public void CmdSetName(string name) { RpcSetName(name); }
-- RpcSetName(string name) suoritetaan jokaisella clientillä (paitsi client A:lla), joka vaihtaa pelaajan nimen muuttujaksi name.
+- RpcSetName(string name) suoritetaan jokaisella clientillä (paitsi client A:lla), joka vaihtaa pelaajan nimeksi name.
 - Eli Client A kertoo serverille uuden nimensä, joka taas kertoo tämän nimen eteenpäin kaikille muille clienteillä.
 
 Toivottavasti sait jonkinlaisen ymmärryksen siitä, miten networking toimii Unityssä ja toivottavasti saat hieman enemmän selvää luokista ja niiden toiminnallisuuksista.
