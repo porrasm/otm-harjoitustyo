@@ -48,6 +48,10 @@ Pelin pelaaminen tapahatuu vasemmassa alareunassa olevan käyttöliittymän avul
 - Käyttöliittymän keltainen nappi on Raise nappi. Napin oikealla puolella on tekstisyöte johon voit kirjoittaa korotuksesi määrän muodossa 'sataset.sentit'
 - Kääyttöliittymän punainen nappi on Fold nappi ja sitä painamalla foldaat kierroksen.
 
+### Pelin eteneminen
+-Peli päättyy, kun on enään 1 pelaaja jäljellä, jolla on rahaa. Jos sinulta loppuu rahat kesken, olet ulkona pelistä. Voit kuitenkin jäädä katsomaan peliä, kunnes se loppuu.
+- Peli päättyessä peli ilmoittaa voittajan ja palauttaa lopulta kaikki pelaaja takaisin päävalikkoon. 
+
 ### Käytöliittymän muut tiedot
 Käyttöliittymässä on useita laatikoita, joiden merkitys on selitetty alhaalla.
 
