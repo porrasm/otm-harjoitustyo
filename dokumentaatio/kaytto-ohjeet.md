@@ -6,6 +6,7 @@ Pelin viimesimmän buildatun version Windowsille tai MACille voi ladata kohdasta
 
 HUOM: Jotkin viruksentorjunta ohjelmistot saattavat varoittaa ohjelmasta. Myös esim VirusTotal.com varoittaa ohjelmasta. Kyseessä ei ole virus vaan todennäköisesti false positive sillä sama ongelma esiintyy useilla eri projekteilla ja useilla tietokoneilla Unity pelien Windows versioissa.
 
+
 ## Main Menu
 
 Päävalikko on hyvin yksinkertainen ja siinä on 3 nappia. Host Match, Join Match ja Quit.
@@ -56,6 +57,9 @@ Käyttöliittymässä on useita laatikoita, joiden merkitys on selitetty alhaall
 
 Tämän lisäksi pöydän ympärillä on valkoiset laatikot joiden sisällä on pelaajien nimet, sekä pelaajien rahamäärät.
 
+## Yksinpeli ja testaus yksin
+
+Peli on tällä hetkellä ainoastaan moninpeli, eli et voi pelata sitä yksin. Voit kuitenkin pelata sitä itseäsi vastaan avaamalla pelin auki useamman kerran. Sovelluksen avaaminen useamman kerran toimii ainakin Windowsilla.
 
 ## BUGEJA
 
